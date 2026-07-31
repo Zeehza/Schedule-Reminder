@@ -52,7 +52,7 @@ module.exports = {
 
             tasks.forEach(task => {
                 const wibTime = formatUtcToWib(task.deadline);
-                const kelasLabel = task.kelas === 'Semua' ? '📢 Semua' : (task.kelas === 'A' ? '🅰️ Kelas A' : '🅱️ Kelas B');
+                const kelasLabel = task.kelas === 'Semua' ? '📢 Semua' : (task.kelas === 'A' ? 'Kelas A' : 'Kelas B');
                 let taskDetails = `**Deskripsi:** ${task.description}\n`;
                 taskDetails += `**Deadline:** ${wibTime.dateDisplay} pukul ${wibTime.time} WIB\n`;
                 taskDetails += `**Kelas:** ${kelasLabel}\n`;

@@ -12,17 +12,17 @@ module.exports = {
         // Step 1: Show select menu for kelas selection
         const selectMenu = new StringSelectMenuBuilder()
             .setCustomId('newTaskKelasSelect')
-            .setPlaceholder('Pilih kelas tujuan tugas...')
+            .setPlaceholder('Pilih kelas')
             .addOptions([
-                { label: 'Kelas A', value: 'A', emoji: '🅰️' },
-                { label: 'Kelas B', value: 'B', emoji: '🅱️' },
-                { label: 'Semua Kelas', value: 'Semua', emoji: '📢' },
+                { label: 'Kelas A', value: 'A', },
+                { label: 'Kelas B', value: 'B', },
+                { label: 'Semua Kelas', value: 'Semua', },
             ]);
 
         const row = new ActionRowBuilder().addComponents(selectMenu);
 
         await interaction.reply({
-            content: '📋 **Pilih kelas tujuan untuk tugas baru ini:**',
+            content: '📋 **Pilih kelas :**',
             components: [row],
             ephemeral: true
         });
@@ -34,7 +34,7 @@ module.exports = {
 
         const modal = new ModalBuilder()
             .setCustomId(`newTaskModal_${kelas}`)
-            .setTitle('Input Tugas (Data Entry)');
+            .setTitle('Input Tugas Manual');
 
         // Jam (Format HH.MM)
         const timeInput = new TextInputBuilder()
@@ -98,7 +98,7 @@ module.exports = {
 
             const deadlineUtc = parseWibToUtcString(dateStr, timeStr);
             if (deadlineUtc === 'Invalid date') {
-                return interaction.reply({ content: '❌ Tanggal/waktu tidak valid atau sudah lewat tanggalnya!', ephemeral: true });
+                return interaction.reply({ content: '❌ Tanggal/waktu tidak valid atau Tanggal sudah lewat!', ephemeral: true });
             }
 
             const taskId = generateTaskId();

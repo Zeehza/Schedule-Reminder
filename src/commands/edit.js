@@ -6,7 +6,7 @@ module.exports = {
     data: new SlashCommandBuilder()
         .setName('edit')
         .setDescription('Ubah detail tugas')
-        .addStringOption(option => 
+        .addStringOption(option =>
             option.setName('id')
                 .setDescription('ID Tugas (contoh: #TGS-01)')
                 .setRequired(true)
@@ -32,8 +32,8 @@ module.exports = {
                 .setCustomId(`editTaskKelasSelect_${taskId}`)
                 .setPlaceholder('Pilih kelas tujuan tugas...')
                 .addOptions([
-                    { label: 'Kelas A', value: 'A', emoji: '🅰️', default: currentKelas === 'A' },
-                    { label: 'Kelas B', value: 'B', emoji: '🅱️', default: currentKelas === 'B' },
+                    { label: 'Kelas A', value: 'A', default: currentKelas === 'A' },
+                    { label: 'Kelas B', value: 'B', default: currentKelas === 'B' },
                     { label: 'Semua Kelas', value: 'Semua', emoji: '📢', default: currentKelas === 'Semua' },
                 ]);
 
@@ -124,7 +124,7 @@ module.exports = {
         const parts = customId.split('_');
         const taskId = parts[1];
         const kelas = parts[2];
-        
+
         const timeStr = interaction.fields.getTextInputValue('timeInput');
         const dateStr = interaction.fields.getTextInputValue('dateInput');
         const description = interaction.fields.getTextInputValue('descInput') || 'Tanpa Deskripsi';
