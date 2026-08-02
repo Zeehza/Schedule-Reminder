@@ -31,10 +31,20 @@ async function initDatabase() {
     // Initialize tables
     await pool.query(`
         CREATE TABLE IF NOT EXISTS channels (
-            guildId VARCHAR(255) PRIMARY KEY,
-            channelId VARCHAR(255) NOT NULL
+            guildId VARCHAR(255),
+            channelId VARCHAR(255) NOT NULL,
+            kelas ENUM('A', 'B', 'Semua') DEFAULT 'Semua',
+            PRIMARY KEY (guildId, kelas)
         )
     `);
+
+    // Migrate existing channels table if needed (drop primary key and add new one)
+    try {
+        await pool.query(`ALTER TABLE channels ADD COLUMN kelas ENUM('A', 'B', 'Semua') DEFAULT 'Semua'`);
+        await pool.query(`ALTER TABLE channels DROP PRIMARY KEY, ADD PRIMARY KEY(guildId, kelas)`);
+    } catch (err) {
+        // Ignored if already migrated or column exists
+    }
 
     await pool.query(`
         CREATE TABLE IF NOT EXISTS tasks (

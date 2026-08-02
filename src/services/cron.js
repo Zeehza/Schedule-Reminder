@@ -41,14 +41,9 @@ function startCronJob(client) {
                 const deadlineUtc = moment.utc(task.deadline);
                 const diffMinutes = deadlineUtc.diff(nowUtc, 'minutes');
 
-                // Get notification channel for this guild
-                const [channels] = await pool.query(`SELECT channelId FROM channels WHERE guildId = ?`, [task.guildId]);
+                // Get notification channels for this guild
+                const [channels] = await pool.query(`SELECT channelId, kelas FROM channels WHERE guildId = ?`, [task.guildId]);
                 if (channels.length === 0) continue;
-
-                const channelId = channels[0].channelId;
-                const channel = client.channels.cache.get(channelId);
-
-                if (!channel) continue;
 
                 // Get role mapping for this guild (cached)
                 if (!roleCache[task.guildId]) {
@@ -59,9 +54,33 @@ function startCronJob(client) {
                 }
                 const roleMap = roleCache[task.guildId];
 
-                const kelas = task.kelas || 'Semua';
-                const mention = buildRoleMention(kelas, roleMap);
-                const kelasLabel = kelas === 'Semua' ? '' : ` (Kelas ${kelas})`;
+                const taskKelas = task.kelas || 'Semua';
+                let targetChannelsWithRoles = []; // Array of { channelId, kelasToPing }
+
+                if (taskKelas === 'Semua') {
+                    const semuaChannel = channels.find(c => c.kelas === 'Semua');
+                    if (semuaChannel) {
+                        targetChannelsWithRoles.push({ channelId: semuaChannel.channelId, kelasToPing: 'Semua' });
+                    } else {
+                        // Fallback: send to individual channels if 'Semua' channel not set
+                        const aChannel = channels.find(c => c.kelas === 'A');
+                        const bChannel = channels.find(c => c.kelas === 'B');
+                        if (aChannel) targetChannelsWithRoles.push({ channelId: aChannel.channelId, kelasToPing: 'A' });
+                        if (bChannel) targetChannelsWithRoles.push({ channelId: bChannel.channelId, kelasToPing: 'B' });
+                    }
+                } else {
+                    const specificChannel = channels.find(c => c.kelas === taskKelas);
+                    if (specificChannel) {
+                        targetChannelsWithRoles.push({ channelId: specificChannel.channelId, kelasToPing: taskKelas });
+                    } else {
+                        const semuaChannel = channels.find(c => c.kelas === 'Semua');
+                        if (semuaChannel) {
+                            targetChannelsWithRoles.push({ channelId: semuaChannel.channelId, kelasToPing: taskKelas });
+                        }
+                    }
+                }
+
+                if (targetChannelsWithRoles.length === 0) continue;
 
                 let linkText = '';
                 if (task.link) {
@@ -73,17 +92,38 @@ function startCronJob(client) {
                 }
 
                 // Phase 4: Notifications
-                if (diffMinutes === 72 * 60) {
-                    // H-3 (72 Jam)
-                    await channel.send(
-                        `🔴 ${mention} **PERHATIAN! H-3 Deadline!${kelasLabel}**\nTugas **${task.description}** harus dikumpulkan dalam 3 hari lagi.${linkText}`
-                    );
+                for (const target of targetChannelsWithRoles) {
+                    const channel = client.channels.cache.get(target.channelId);
+                    if (!channel) continue;
 
+                    const mention = buildRoleMention(target.kelasToPing, roleMap);
+                    const kelasLabel = taskKelas === 'Semua' ? '' : ` (Kelas ${taskKelas})`;
+
+                    if (diffMinutes === 72 * 60) {
+                        // H-3 (72 Jam)
+                        await channel.send(
+                            `🔴 ${mention} **PERHATIAN! H-3 Deadline!${kelasLabel}**\nTugas **${task.description}** harus dikumpulkan dalam 3 hari lagi.${linkText}`
+                        );
+                    } else if (diffMinutes === 24 * 60) {
+                        // H-1 (24 Jam)
+                        await channel.send(
+                            `❗ ${mention} **PENGINGAT H-1!${kelasLabel}**\nBesok adalah batas akhir pengumpulan **${task.description}**. Segera selesaikan!${linkText}`
+                        );
+                    } else if (diffMinutes === 12 * 60) {
+                        // H-12 Jam
+                        await channel.send(
+                            `⚠️ ${mention} **FINAL REMINDER!${kelasLabel}**\nWaktu tersisa 12 Jam lagi untuk mengumpulkan **${task.description}**!${linkText}`
+                        );
+                    }
+                }
+
+                // Create Discord Event at H-3 (Only create ONCE per task, not per channel)
+                if (diffMinutes === 72 * 60) {
                     try {
                         const guild = client.guilds.cache.get(task.guildId);
                         if (guild) {
                             const startTime = deadlineUtc.toDate();
-                            const endTime = deadlineUtc.clone().add(1, 'hour').toDate();
+                            const endTime = deadlineUtc.clone().add(5, 'minute').toDate();
 
                             await guild.scheduledEvents.create({
                                 name: task.description.substring(0, 100),
@@ -92,22 +132,12 @@ function startCronJob(client) {
                                 privacyLevel: GuildScheduledEventPrivacyLevel.GuildOnly,
                                 entityType: GuildScheduledEventEntityType.External,
                                 entityMetadata: { location: task.link ? task.link.substring(0, 100) : 'Ruang Kelas / Tugas' },
-                                description: `Tugas: ${task.description}\nID: ${task.id}\nKelas: ${kelas}`,
+                                description: `Tugas: ${task.description}\nID: ${task.id}\nKelas: ${taskKelas}`,
                             });
                         }
                     } catch (err) {
                         console.error('Gagal membuat Discord Event:', err);
                     }
-                } else if (diffMinutes === 24 * 60) {
-                    // H-1 (24 Jam)
-                    await channel.send(
-                        `❗ ${mention} **PENGINGAT H-1!${kelasLabel}**\nBesok adalah batas akhir pengumpulan **${task.description}**. Segera selesaikan!${linkText}`
-                    );
-                } else if (diffMinutes === 12 * 60) {
-                    // H-12 Jam
-                    await channel.send(
-                        `⚠️ ${mention} **FINAL REMINDER!${kelasLabel}**\nWaktu tersisa 12 Jam lagi untuk mengumpulkan **${task.description}**!${linkText}`
-                    );
                 }
 
                 // Phase 5: Resolution (Pasca-Deadline)

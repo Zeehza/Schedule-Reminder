@@ -10,10 +10,21 @@ module.exports = {
                 .setDescription('The channel to send notifications to')
                 .setRequired(true)
         )
+        .addStringOption(option => 
+            option.setName('kelas')
+                .setDescription('Pilih kelas untuk channel ini')
+                .setRequired(true)
+                .addChoices(
+                    { name: 'Kelas A', value: 'A' },
+                    { name: 'Kelas B', value: 'B' },
+                    { name: 'Semua', value: 'Semua' }
+                )
+        )
         .setDefaultMemberPermissions(PermissionFlagsBits.Administrator),
 
     async execute(interaction) {
         const channel = interaction.options.getChannel('channel');
+        const kelas = interaction.options.getString('kelas');
         const guildId = interaction.guildId;
 
         // Check bot permissions in target channel
@@ -31,13 +42,13 @@ module.exports = {
             const pool = getDb();
             // Upsert channel info
             await pool.query(
-                `INSERT INTO channels (guildId, channelId) VALUES (?, ?) 
+                `INSERT INTO channels (guildId, kelas, channelId) VALUES (?, ?, ?) 
                  ON DUPLICATE KEY UPDATE channelId = ?`, 
-                [guildId, channel.id, channel.id]
+                [guildId, kelas, channel.id, channel.id]
             );
 
             await interaction.reply({ 
-                content: `✅ Channel notifikasi deadline berhasil diatur ke <#${channel.id}>.`, 
+                content: `✅ Channel notifikasi deadline untuk kelas **${kelas}** berhasil diatur ke <#${channel.id}>.`, 
                 ephemeral: true 
             });
         } catch (error) {

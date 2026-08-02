@@ -22,7 +22,7 @@ module.exports = {
         const row = new ActionRowBuilder().addComponents(selectMenu);
 
         await interaction.reply({
-            content: '📋 **Pilih kelas :**',
+            content: '**Pilih kelas :**',
             components: [row],
             ephemeral: true
         });
