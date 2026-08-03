@@ -1,8 +1,9 @@
 const cron = require('node-cron');
 const moment = require('moment-timezone');
-const { GuildScheduledEventPrivacyLevel, GuildScheduledEventEntityType } = require('discord.js');
+const { GuildScheduledEventPrivacyLevel, GuildScheduledEventEntityType, EmbedBuilder } = require('discord.js');
 const { getDb } = require('../database/connection');
 const { TIMEZONE } = require('../utils/time');
+const { removePinnedTaskMessage, pinTaskMessage } = require('./pinManager');
 
 /**
  * Build a role mention string based on task kelas and guild roles config
@@ -99,54 +100,44 @@ function startCronJob(client) {
                     const mention = buildRoleMention(target.kelasToPing, roleMap);
                     const kelasLabel = taskKelas === 'Semua' ? '' : ` (Kelas ${taskKelas})`;
 
+                    let embed = null;
                     if (diffMinutes === 72 * 60) {
                         // H-3 (72 Jam)
-                        await channel.send(
-                            `🔴 ${mention} **PERHATIAN! H-3 Deadline!${kelasLabel}**\nTugas **${task.description}** harus dikumpulkan dalam 3 hari lagi.${linkText}`
-                        );
+                        embed = new EmbedBuilder()
+                            .setTitle(`🔴 PERHATIAN! H-3 Deadline!${kelasLabel}`)
+                            .setDescription(`Tugas **${task.description}** harus dikumpulkan dalam 3 hari lagi.${linkText}`);
                     } else if (diffMinutes === 24 * 60) {
                         // H-1 (24 Jam)
-                        await channel.send(
-                            `❗ ${mention} **PENGINGAT H-1!${kelasLabel}**\nBesok adalah batas akhir pengumpulan **${task.description}**. Segera selesaikan!${linkText}`
-                        );
+                        embed = new EmbedBuilder()
+                            .setTitle(`❗ PENGINGAT H-1!${kelasLabel}`)
+                            .setDescription(`Besok adalah batas akhir pengumpulan **${task.description}**. Segera selesaikan!${linkText}`);
                     } else if (diffMinutes === 12 * 60) {
                         // H-12 Jam
-                        await channel.send(
-                            `⚠️ ${mention} **FINAL REMINDER!${kelasLabel}**\nWaktu tersisa 12 Jam lagi untuk mengumpulkan **${task.description}**!${linkText}`
-                        );
+                        embed = new EmbedBuilder()
+                            .setTitle(`⚠️ FINAL REMINDER!${kelasLabel}`)
+                            .setDescription(`Waktu tersisa 12 Jam lagi untuk mengumpulkan **${task.description}**!${linkText}`);
                     }
-                }
 
-                // Create Discord Event at H-3 (Only create ONCE per task, not per channel)
-                if (diffMinutes === 72 * 60) {
-                    try {
-                        const guild = client.guilds.cache.get(task.guildId);
-                        if (guild) {
-                            const startTime = deadlineUtc.toDate();
-                            const endTime = deadlineUtc.clone().add(5, 'minute').toDate();
-
-                            await guild.scheduledEvents.create({
-                                name: task.description.substring(0, 100),
-                                scheduledStartTime: startTime,
-                                scheduledEndTime: endTime,
-                                privacyLevel: GuildScheduledEventPrivacyLevel.GuildOnly,
-                                entityType: GuildScheduledEventEntityType.External,
-                                entityMetadata: { location: task.link ? task.link.substring(0, 100) : 'Ruang Kelas / Tugas' },
-                                description: `Tugas: ${task.description}\nID: ${task.id}\nKelas: ${taskKelas}`,
-                            });
-                        }
-                    } catch (err) {
-                        console.error('Gagal membuat Discord Event:', err);
+                    if (embed) {
+                        embed.setColor('#9400d3')
+                             .setTimestamp();
+                        await channel.send({ content: mention, embeds: [embed] });
                     }
                 }
 
                 // Phase 5: Resolution (Pasca-Deadline)
                 if (diffMinutes <= 0) {
+                    await removePinnedTaskMessage(client, task.id);
+                    
                     if (task.repeat_status === 'Once') {
                         await pool.query(`DELETE FROM tasks WHERE id = ? AND guildId = ?`, [task.id, task.guildId]);
                     } else if (task.repeat_status === 'Weekly') {
                         const nextDeadlineUtc = deadlineUtc.add(7, 'days').format('YYYY-MM-DD HH:mm:ss');
                         await pool.query(`UPDATE tasks SET deadline = ? WHERE id = ? AND guildId = ?`, [nextDeadlineUtc, task.id, task.guildId]);
+                        
+                        // Repin the task with the new deadline
+                        task.deadline = nextDeadlineUtc;
+                        await pinTaskMessage(client, task);
                     }
                 }
             }

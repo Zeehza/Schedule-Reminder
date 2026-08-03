@@ -47,6 +47,15 @@ async function initDatabase() {
     }
 
     await pool.query(`
+        CREATE TABLE IF NOT EXISTS pinned_messages (
+            taskId VARCHAR(255) NOT NULL,
+            channelId VARCHAR(255) NOT NULL,
+            messageId VARCHAR(255) NOT NULL,
+            PRIMARY KEY (taskId, channelId, messageId)
+        )
+    `);
+
+    await pool.query(`
         CREATE TABLE IF NOT EXISTS tasks (
             id VARCHAR(255) PRIMARY KEY,
             guildId VARCHAR(255) NOT NULL,

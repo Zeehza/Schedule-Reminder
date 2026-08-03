@@ -1,6 +1,7 @@
 const { SlashCommandBuilder, PermissionFlagsBits, ModalBuilder, TextInputBuilder, TextInputStyle, ActionRowBuilder, StringSelectMenuBuilder } = require('discord.js');
 const { getDb } = require('../database/connection');
 const { parseWibToUtcString, generateTaskId } = require('../utils/time');
+const { pinTaskMessage } = require('../services/pinManager');
 
 module.exports = {
     data: new SlashCommandBuilder()
@@ -109,6 +110,16 @@ module.exports = {
                 `INSERT INTO tasks (id, guildId, description, deadline, link, repeat_status, kelas) VALUES (?, ?, ?, ?, ?, ?, ?)`,
                 [taskId, guildId, description, deadlineUtc, link, 'Once', kelas]
             );
+
+            // Pin message
+            await pinTaskMessage(interaction.client, {
+                id: taskId,
+                guildId,
+                description,
+                deadline: deadlineUtc,
+                link,
+                kelas
+            });
 
             // Build role mention
             let roleMention = '';

@@ -2,6 +2,7 @@ const { SlashCommandBuilder, PermissionFlagsBits } = require('discord.js');
 const { getDb } = require('../database/connection');
 const { parseICS } = require('../services/icsParser');
 const { generateTaskId } = require('../utils/time');
+const { pinTaskMessage } = require('../services/pinManager');
 const https = require('https');
 
 module.exports = {
@@ -58,6 +59,15 @@ module.exports = {
                             `INSERT INTO tasks (id, guildId, description, deadline, link, repeat_status, kelas) VALUES (?, ?, ?, ?, ?, ?, ?)`,
                             [taskId, guildId, task.description || 'Task', task.deadlineUtc, task.link, 'Once', kelas]
                         );
+
+                        await pinTaskMessage(interaction.client, {
+                            id: taskId,
+                            guildId,
+                            description: task.description || 'Task',
+                            deadline: task.deadlineUtc,
+                            link: task.link,
+                            kelas
+                        });
                     }
 
                     // Build role mention for reply

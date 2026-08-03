@@ -1,5 +1,6 @@
 const { SlashCommandBuilder, PermissionFlagsBits } = require('discord.js');
 const { getDb } = require('../database/connection');
+const { removePinnedTaskMessage } = require('../services/pinManager');
 
 module.exports = {
     data: new SlashCommandBuilder()
@@ -18,6 +19,8 @@ module.exports = {
         const pool = getDb();
 
         try {
+            await removePinnedTaskMessage(interaction.client, taskId);
+
             const [result] = await pool.query(
                 `DELETE FROM tasks WHERE id = ? AND guildId = ?`, 
                 [taskId, guildId]
