@@ -16,9 +16,9 @@
     A powerful and customizable Discord Bot built to manage and remind you of your schedules!
     <br />
     <br />
-    <a href="https://github.com/FahrizaSalam/Schedule-Reminder/issues">Report Bug</a>
+    <a href="https://github.com/Zeehza/Schedule-Reminder/issues">Report Bug</a>
     ·
-    <a href="https://github.com/FahrizaSalam/Schedule-Reminder/issues">Request Feature</a>
+    <a href="https://github.com/Zeehza/Schedule-Reminder/issues">Request Feature</a>
   </p>
 </div>
 
@@ -82,7 +82,7 @@ To get a local copy up and running follow these simple steps.
 1. Create a Discord Bot on the [Discord Developer Portal](https://discord.com/developers/applications) and grab your token and client ID.
 2. Clone the repo
    ```sh
-   git clone https://github.com/FahrizaSalam/Schedule-Reminder.git
+   git clone https://github.com/Zeehza/Schedule-Reminder.git
    ```
 3. Install NPM packages
    ```sh
@@ -142,7 +142,7 @@ Here is a list of available slash commands:
 - [ ] Multi-server support enhancements
 - [ ] Web dashboard for managing schedules
 
-See the [open issues](https://github.com/FahrizaSalam/Schedule-Reminder/issues) for a full list of proposed features (and known issues).
+See the [open issues](https://github.com/Zeehza/Schedule-Reminder/issues) for a full list of proposed features (and known issues).
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -172,23 +172,23 @@ Distributed under the ISC License. See `package.json` for more information.
 <!-- CONTACT -->
 ## Contact
 
-Zeehza - [GitHub Profile](https://github.com/FahrizaSalam)
+Zeehza - [GitHub Profile](https://github.com/Zeehza)
 
-Project Link: [https://github.com/FahrizaSalam/Schedule-Reminder](https://github.com/FahrizaSalam/Schedule-Reminder)
+Project Link: [https://github.com/Zeehza/Schedule-Reminder](https://github.com/Zeehza/Schedule-Reminder)
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 <!-- MARKDOWN LINKS & IMAGES -->
-[contributors-shield]: https://img.shields.io/github/contributors/FahrizaSalam/Schedule-Reminder.svg?style=for-the-badge
-[contributors-url]: https://github.com/FahrizaSalam/Schedule-Reminder/graphs/contributors
-[forks-shield]: https://img.shields.io/github/forks/FahrizaSalam/Schedule-Reminder.svg?style=for-the-badge
-[forks-url]: https://github.com/FahrizaSalam/Schedule-Reminder/network/members
-[stars-shield]: https://img.shields.io/github/stars/FahrizaSalam/Schedule-Reminder.svg?style=for-the-badge
-[stars-url]: https://github.com/FahrizaSalam/Schedule-Reminder/stargazers
-[issues-shield]: https://img.shields.io/github/issues/FahrizaSalam/Schedule-Reminder.svg?style=for-the-badge
-[issues-url]: https://github.com/FahrizaSalam/Schedule-Reminder/issues
-[license-shield]: https://img.shields.io/github/license/FahrizaSalam/Schedule-Reminder.svg?style=for-the-badge
-[license-url]: https://github.com/FahrizaSalam/Schedule-Reminder/blob/master/package.json
+[contributors-shield]: https://img.shields.io/github/contributors/Zeehza/Schedule-Reminder.svg?style=for-the-badge
+[contributors-url]: https://github.com/Zeehza/Schedule-Reminder/graphs/contributors
+[forks-shield]: https://img.shields.io/github/forks/Zeehza/Schedule-Reminder.svg?style=for-the-badge
+[forks-url]: https://github.com/Zeehza/Schedule-Reminder/network/members
+[stars-shield]: https://img.shields.io/github/stars/Zeehza/Schedule-Reminder.svg?style=for-the-badge
+[stars-url]: https://github.com/Zeehza/Schedule-Reminder/stargazers
+[issues-shield]: https://img.shields.io/github/issues/Zeehza/Schedule-Reminder.svg?style=for-the-badge
+[issues-url]: https://github.com/Zeehza/Schedule-Reminder/issues
+[license-shield]: https://img.shields.io/github/license/Zeehza/Schedule-Reminder.svg?style=for-the-badge
+[license-url]: https://github.com/Zeehza/Schedule-Reminder/blob/master/package.json
 [Node.js]: https://img.shields.io/badge/Node.js-43853D?style=for-the-badge&logo=node.js&logoColor=white
 [Node-url]: https://nodejs.org/
 [Discord.js]: https://img.shields.io/badge/Discord.js-5865F2?style=for-the-badge&logo=discord&logoColor=white
