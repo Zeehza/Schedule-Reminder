@@ -76,11 +76,9 @@ async function runMinuteTasks(client) {
         // Get role mapping for this guild (cached)
         if (!roleCache[task.guildId]) {
             const [roles] = await pool.query(`SELECT * FROM roles WHERE guildId = ?`, [task.guildId]);
-            const roleMap = {};
-            for (const r of roles) roleMap[r.kelas] = r.roleId;
-            roleCache[task.guildId] = roleMap;
+            roleCache[task.guildId] = roles;
         }
-        const roleMap = roleCache[task.guildId];
+        const roles = roleCache[task.guildId];
 
         const taskKelas = task.kelas || 'Semua';
         let targetChannelsWithRoles = []; 
@@ -124,7 +122,7 @@ async function runMinuteTasks(client) {
                 const channel = client.channels.cache.get(target.channelId);
                 if (!channel) continue;
 
-                const mention = buildRoleMention(target.kelasToPing, roleMap);
+                const mention = buildRoleMention(target.kelasToPing, roles);
                 const kelasLabel = taskKelas === 'Semua' ? '' : ` (Kelas ${taskKelas})`;
 
                 let embed = null;
