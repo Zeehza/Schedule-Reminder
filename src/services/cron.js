@@ -60,6 +60,7 @@ async function runMinuteTasks(client) {
 
     // Cache role mappings per guild to avoid redundant queries
     const roleCache = {};
+    const channelCache = {};
 
     for (const task of tasks) {
         // Handle timezone parsing natively. task.deadline is a string from DB like 'YYYY-MM-DD HH:mm:ss'
@@ -69,8 +70,12 @@ async function runMinuteTasks(client) {
         const diffMs = deadlineUtc.getTime() - nowUtc.getTime();
         const diffMinutes = Math.round(diffMs / 1000 / 60);
 
-        // Get notification channels for this guild
-        const [channels] = await pool.query(`SELECT channelId, kelas FROM channels WHERE guildId = ?`, [task.guildId]);
+        // Get notification channels for this guild (cached)
+        if (!channelCache[task.guildId]) {
+            const [channels] = await pool.query(`SELECT channelId, kelas FROM channels WHERE guildId = ?`, [task.guildId]);
+            channelCache[task.guildId] = channels;
+        }
+        const channels = channelCache[task.guildId];
         if (channels.length === 0) continue;
 
         // Get role mapping for this guild (cached)
@@ -198,20 +203,18 @@ async function runHourlySync(client) {
             
             let newTasksCount = 0;
             
+            // Cache existing tasks for this guild to prevent N+1 query problem
+            const [existingTasks] = await pool.query('SELECT uid, description, deadline FROM tasks WHERE guildId = ?', [syncJob.guildId]);
+            const existingUids = new Set(existingTasks.filter(t => t.uid).map(t => t.uid));
+            const existingDescDates = new Set(existingTasks.map(t => `${t.description}_${t.deadline}`));
+            
             for (const task of tasks) {
                 let exists = false;
                 if (task.uid) {
-                    const [existing] = await pool.query(
-                        'SELECT id FROM tasks WHERE guildId = ? AND uid = ?',
-                        [syncJob.guildId, task.uid]
-                    );
-                    if (existing.length > 0) exists = true;
+                    if (existingUids.has(task.uid)) exists = true;
                 } else {
-                    const [existing] = await pool.query(
-                        'SELECT id FROM tasks WHERE guildId = ? AND description = ? AND deadline = ?',
-                        [syncJob.guildId, task.description || 'Task', task.deadlineUtc]
-                    );
-                    if (existing.length > 0) exists = true;
+                    const desc = task.description || 'Task';
+                    if (existingDescDates.has(`${desc}_${task.deadlineUtc}`)) exists = true;
                 }
                 
                 if (!exists) {
