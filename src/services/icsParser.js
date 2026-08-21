@@ -1,5 +1,4 @@
 const ical = require('node-ical');
-const moment = require('moment-timezone');
 
 /**
  * Parses ICS content and extracts task information.
@@ -21,8 +20,8 @@ function parseICS(icsContent) {
                 if (!deadlineDate) continue;
 
                 // node-ical parses dates to native Date objects
-                const utcMoment = moment.utc(deadlineDate);
-                const deadlineUtc = utcMoment.format('YYYY-MM-DD HH:mm:ss');
+                // Format directly to YYYY-MM-DD HH:mm:ss in UTC
+                const deadlineUtc = new Date(deadlineDate).toISOString().slice(0, 19).replace('T', ' ');
 
                 const summary = event.summary || '';
                 const description = event.description || '';
