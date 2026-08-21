@@ -7,6 +7,7 @@ async function initDatabase() {
     // First, connect without a specific database to ensure it exists
     const tempConnection = await mysql.createConnection({
         host: process.env.DB_HOST || 'localhost',
+        port: parseInt(process.env.DB_PORT) || 3306,
         user: process.env.DB_USER || 'root',
         password: process.env.DB_PASSWORD || ''
     });
@@ -18,6 +19,7 @@ async function initDatabase() {
     // Now create the connection pool
     pool = mysql.createPool({
         host: process.env.DB_HOST || 'localhost',
+        port: parseInt(process.env.DB_PORT) || 3306,
         user: process.env.DB_USER || 'root',
         password: process.env.DB_PASSWORD || '',
         database: dbName,
