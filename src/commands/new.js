@@ -25,7 +25,7 @@ module.exports = {
         await interaction.reply({
             content: '**Pilih kelas :**',
             components: [row],
-            ephemeral: true
+            flags: MessageFlags.Ephemeral
         });
     },
 
@@ -94,12 +94,12 @@ module.exports = {
         try {
             // Regex validation
             if (!/^\d{2}\.\d{2}$/.test(timeStr) || !/^\d{2}\/\d{2}\/\d{4}$/.test(dateStr)) {
-                return interaction.reply({ content: '❌ Format waktu atau tanggal tidak valid!', ephemeral: true });
+                return interaction.reply({ content: '❌ Format waktu atau tanggal tidak valid!', flags: MessageFlags.Ephemeral });
             }
 
             const deadlineUtc = parseWibToUtcString(dateStr, timeStr);
             if (deadlineUtc === 'Invalid date') {
-                return interaction.reply({ content: '❌ Tanggal/waktu tidak valid atau Tanggal sudah lewat!', ephemeral: true });
+                return interaction.reply({ content: '❌ Tanggal/waktu tidak valid atau Tanggal sudah lewat!', flags: MessageFlags.Ephemeral });
             }
 
             const taskId = generateTaskId();
@@ -140,12 +140,11 @@ module.exports = {
 
             const kelasLabel = kelas === 'Semua' ? 'Semua Kelas' : `Kelas ${kelas}`;
             await interaction.reply({
-                content: `${roleMention} ✅ Deadline **${taskId}** untuk **${kelasLabel}** berhasil ditambahkan.\n📝 **${description}**`,
-                ephemeral: false
+                content: `${roleMention} ✅ Deadline **${taskId}** untuk **${kelasLabel}** berhasil ditambahkan.\n📝 **${description}**`
             });
         } catch (error) {
             console.error('Error handling new task modal:', error);
-            await interaction.reply({ content: '❌ Terjadi kesalahan saat menyimpan tugas.', ephemeral: true });
+            await interaction.reply({ content: '❌ Terjadi kesalahan saat menyimpan tugas.', flags: MessageFlags.Ephemeral });
         }
     }
 };

@@ -34,13 +34,13 @@ module.exports = {
             );
 
             if (result.affectedRows === 0) {
-                return interaction.reply({ content: `❌ Tugas dengan ID ${taskId} tidak ditemukan.`, ephemeral: true });
+                return interaction.reply({ content: `❌ Tugas dengan ID ${taskId} tidak ditemukan.`, flags: MessageFlags.Ephemeral });
             }
 
             await interaction.reply({ content: `✅ Status pengulangan tugas ${taskId} diubah menjadi **${status}**.` });
         } catch (error) {
             console.error('Error updating repeat status:', error);
-            await interaction.reply({ content: '❌ Terjadi kesalahan saat mengubah status pengulangan.', ephemeral: true });
+            await interaction.reply({ content: '❌ Terjadi kesalahan saat mengubah status pengulangan.', flags: MessageFlags.Ephemeral });
         }
     },
 };

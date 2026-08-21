@@ -123,7 +123,9 @@ Here is a list of available slash commands:
 - `/addschedule` - Add an entry to a schedule.
 - `/edit` - Edit an existing schedule.
 - `/remove` - Remove a schedule or entry.
-- `/list` - List all your active schedules.
+- `/list` - List all your active pending schedules.
+- `/done` - Mark a schedule as completed.
+- `/history` - View a history of completed schedules.
 - `/setchannel` - Set the channel where the bot will send reminders.
 - `/setrole` - Set the role that the bot will ping for reminders.
 - `/repeat` - Configure repeating schedules.

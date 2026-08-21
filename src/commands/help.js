@@ -21,12 +21,14 @@ module.exports = {
                     name: ' Manajemen Tugas (Admin)',
                     value: '`/new` - Menambahkan tugas/deadline baru secara manual.\n' +
                         '`/edit` - Mengubah detail tugas yang sudah ada (deskripsi, deadline, link).\n' +
+                        '`/done` - Menandai tugas sebagai selesai.\n' +
                         '`/remove` - Menghapus tugas dari database secara permanen.\n' +
                         '`/repeat` - Mengatur tugas agar berulang setiap minggu (`Weekly`).'
                 },
                 {
                     name: ' Umum',
-                    value: '`/list` - Melihat daftar seluruh tugas yang belum melewati batas waktu.\n' +
+                    value: '`/list` - Melihat daftar seluruh tugas yang belum selesai.\n' +
+                        '`/history` - Melihat riwayat tugas yang sudah diselesaikan.\n' +
                         '`/help` - Menampilkan panduan ini.'
                 },
                 {
@@ -37,6 +39,6 @@ module.exports = {
             .setFooter({ text: 'Schedule Reminder Bot by Zeehza', iconURL: interaction.client.user.displayAvatarURL() })
             .setTimestamp();
 
-        await interaction.reply({ embeds: [embed], ephemeral: true });
+        await interaction.reply({ embeds: [embed], flags: MessageFlags.Ephemeral });
     },
 };

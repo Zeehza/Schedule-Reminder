@@ -59,11 +59,13 @@ async function initDatabase() {
         CREATE TABLE IF NOT EXISTS tasks (
             id VARCHAR(255) PRIMARY KEY,
             guildId VARCHAR(255) NOT NULL,
+            uid VARCHAR(255),
             description TEXT,
             deadline DATETIME NOT NULL,
             link TEXT,
             repeat_status ENUM('Once', 'Weekly') DEFAULT 'Once',
-            kelas ENUM('A', 'B', 'Semua') DEFAULT 'Semua'
+            kelas ENUM('A', 'B', 'Semua') DEFAULT 'Semua',
+            status ENUM('pending', 'completed') DEFAULT 'pending'
         )
     `);
 
@@ -73,6 +75,30 @@ async function initDatabase() {
     } catch (err) {
         // Column already exists, ignore
     }
+
+    // Add status column if it doesn't exist (for existing databases)
+    try {
+        await pool.query(`ALTER TABLE tasks ADD COLUMN status ENUM('pending', 'completed') DEFAULT 'pending'`);
+    } catch (err) {
+        // Column already exists, ignore
+    }
+
+    // Add uid column if it doesn't exist (for existing databases)
+    try {
+        await pool.query(`ALTER TABLE tasks ADD COLUMN uid VARCHAR(255)`);
+    } catch (err) {
+        // Column already exists, ignore
+    }
+
+    await pool.query(`
+        CREATE TABLE IF NOT EXISTS sync_urls (
+            id INT AUTO_INCREMENT PRIMARY KEY,
+            guildId VARCHAR(255) NOT NULL,
+            url TEXT NOT NULL,
+            kelas ENUM('A', 'B', 'Semua') DEFAULT 'Semua',
+            last_sync DATETIME
+        )
+    `);
 
     await pool.query(`
         CREATE TABLE IF NOT EXISTS roles (

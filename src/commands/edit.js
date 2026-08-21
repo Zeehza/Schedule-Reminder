@@ -21,7 +21,7 @@ module.exports = {
         try {
             const [rows] = await pool.query(`SELECT * FROM tasks WHERE id = ? AND guildId = ?`, [taskId, guildId]);
             if (rows.length === 0) {
-                return interaction.reply({ content: `❌ Tugas dengan ID ${taskId} tidak ditemukan.`, ephemeral: true });
+                return interaction.reply({ content: `❌ Tugas dengan ID ${taskId} tidak ditemukan.`, flags: MessageFlags.Ephemeral });
             }
 
             const task = rows[0];
@@ -42,11 +42,11 @@ module.exports = {
             await interaction.reply({
                 content: `📋 **Pilih kelas tujuan untuk tugas ${taskId}:**\n_(Kelas saat ini: **${currentKelas === 'Semua' ? 'Semua Kelas' : 'Kelas ' + currentKelas}**)_`,
                 components: [row],
-                ephemeral: true
+                flags: MessageFlags.Ephemeral
             });
         } catch (error) {
             console.error('Error in edit command:', error);
-            await interaction.reply({ content: '❌ Terjadi kesalahan saat mengambil data tugas.', ephemeral: true });
+            await interaction.reply({ content: '❌ Terjadi kesalahan saat mengambil data tugas.', flags: MessageFlags.Ephemeral });
         }
     },
 
@@ -61,7 +61,7 @@ module.exports = {
         try {
             const [rows] = await pool.query(`SELECT * FROM tasks WHERE id = ? AND guildId = ?`, [taskId, guildId]);
             if (rows.length === 0) {
-                return interaction.reply({ content: `❌ Tugas dengan ID ${taskId} tidak ditemukan.`, ephemeral: true });
+                return interaction.reply({ content: `❌ Tugas dengan ID ${taskId} tidak ditemukan.`, flags: MessageFlags.Ephemeral });
             }
 
             const task = rows[0];
@@ -114,7 +114,7 @@ module.exports = {
             await interaction.showModal(modal);
         } catch (error) {
             console.error('Error showing edit modal:', error);
-            await interaction.reply({ content: '❌ Terjadi kesalahan saat mengambil data tugas.', ephemeral: true });
+            await interaction.reply({ content: '❌ Terjadi kesalahan saat mengambil data tugas.', flags: MessageFlags.Ephemeral });
         }
     },
 
@@ -132,12 +132,12 @@ module.exports = {
 
         try {
             if (!/^\d{2}\.\d{2}$/.test(timeStr) || !/^\d{2}\/\d{2}\/\d{4}$/.test(dateStr)) {
-                return interaction.reply({ content: '❌ Format waktu atau tanggal tidak valid!', ephemeral: true });
+                return interaction.reply({ content: '❌ Format waktu atau tanggal tidak valid!', flags: MessageFlags.Ephemeral });
             }
 
             const deadlineUtc = parseWibToUtcString(dateStr, timeStr);
             if (deadlineUtc === 'Invalid date') {
-                return interaction.reply({ content: '❌ Tanggal/waktu tidak valid atau sudah lewat formatnya!', ephemeral: true });
+                return interaction.reply({ content: '❌ Tanggal/waktu tidak valid atau sudah lewat formatnya!', flags: MessageFlags.Ephemeral });
             }
 
             const pool = getDb();
@@ -149,10 +149,10 @@ module.exports = {
             );
 
             const kelasLabel = kelas === 'Semua' ? 'Semua Kelas' : `Kelas ${kelas}`;
-            await interaction.reply({ content: `✅ Tugas ${taskId} berhasil diubah. (Kelas: **${kelasLabel}**)`, ephemeral: false });
+            await interaction.reply({ content: `✅ Tugas ${taskId} berhasil diubah. (Kelas: **${kelasLabel}**)` });
         } catch (error) {
             console.error('Error handling edit task modal:', error);
-            await interaction.reply({ content: '❌ Terjadi kesalahan saat menyimpan perubahan.', ephemeral: true });
+            await interaction.reply({ content: '❌ Terjadi kesalahan saat menyimpan perubahan.', flags: MessageFlags.Ephemeral });
         }
     }
 };

@@ -27,13 +27,13 @@ module.exports = {
             );
 
             if (result.affectedRows === 0) {
-                return interaction.reply({ content: `❌ Tugas dengan ID ${taskId} tidak ditemukan.`, ephemeral: true });
+                return interaction.reply({ content: `❌ Tugas dengan ID ${taskId} tidak ditemukan.`, flags: MessageFlags.Ephemeral });
             }
 
             await interaction.reply({ content: `✅ Tugas ${taskId} berhasil dihapus secara permanen.` });
         } catch (error) {
             console.error('Error removing task:', error);
-            await interaction.reply({ content: '❌ Terjadi kesalahan saat menghapus tugas.', ephemeral: true });
+            await interaction.reply({ content: '❌ Terjadi kesalahan saat menghapus tugas.', flags: MessageFlags.Ephemeral });
         }
     },
 };

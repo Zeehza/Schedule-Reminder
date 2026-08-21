@@ -31,13 +31,7 @@ function formatUtcToWib(utcDateStr) {
     };
 }
 
-/**
- * Gets the current time in WIB
- * @returns {moment.Moment}
- */
-function getCurrentWibTime() {
-    return moment().tz(TIMEZONE);
-}
+
 
 /**
  * Generates a unique task ID
@@ -50,7 +44,6 @@ function generateTaskId() {
 module.exports = {
     parseWibToUtcString,
     formatUtcToWib,
-    getCurrentWibTime,
     generateTaskId,
     TIMEZONE
 };

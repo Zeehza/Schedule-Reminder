@@ -36,11 +36,11 @@ module.exports = {
 
             await interaction.reply({
                 content: `✅ Role untuk **Kelas ${kelas}** berhasil diatur ke <@&${role.id}>.`,
-                ephemeral: true
+                flags: MessageFlags.Ephemeral
             });
         } catch (error) {
             console.error('Error setting role:', error);
-            await interaction.reply({ content: '❌ Terjadi kesalahan saat menyimpan role.', ephemeral: true });
+            await interaction.reply({ content: '❌ Terjadi kesalahan saat menyimpan role.', flags: MessageFlags.Ephemeral });
         }
     },
 };

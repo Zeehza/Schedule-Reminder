@@ -6,12 +6,11 @@ const {
 const { getDb } = require("../database/connection");
 const { formatUtcToWib } = require("../utils/time");
 const { paginateReply } = require("../utils/pagination");
-const moment = require("moment-timezone");
 
 module.exports = {
   data: new SlashCommandBuilder()
-    .setName("list")
-    .setDescription("Melihat Daftar Tugas yang belum melewati batas waktu")
+    .setName("history")
+    .setDescription("Melihat riwayat tugas yang sudah diselesaikan")
     .addStringOption((option) =>
       option
         .setName("kelas")
@@ -30,18 +29,15 @@ module.exports = {
       const guildId = interaction.guildId;
       const kelasFilter = interaction.options.getString("kelas");
 
-      // Get current time in UTC to compare with DB
-      const nowUtc = moment().utc().format("YYYY-MM-DD HH:mm:ss");
-
-      let query = `SELECT * FROM tasks WHERE guildId = ? AND deadline > ? AND status = 'pending'`;
-      const params = [guildId, nowUtc];
+      let query = `SELECT * FROM tasks WHERE guildId = ? AND status = 'completed'`;
+      const params = [guildId];
 
       if (kelasFilter) {
         query += ` AND kelas = ?`;
         params.push(kelasFilter);
       }
 
-      query += ` ORDER BY deadline ASC`;
+      query += ` ORDER BY deadline DESC LIMIT 50`; // Limit to 50 for history to prevent massive queries
 
       const [tasks] = await pool.query(query, params);
 
@@ -50,7 +46,7 @@ module.exports = {
           ? ` untuk ${kelasFilter === "Semua" ? "Semua Kelas" : "Kelas " + kelasFilter}`
           : "";
         return interaction.reply({
-          content: `😃 Tidak ada tugas mendatang silahkan tidur${filterText}.`,
+          content: `Belum ada tugas yang diselesaikan${filterText}.`,
           flags: MessageFlags.Ephemeral,
         });
       }
@@ -61,10 +57,10 @@ module.exports = {
 
       const embedGenerator = (currentTasks, page, totalPages, totalItems) => {
         const embed = new EmbedBuilder()
-          .setTitle(`📋 Daftar Tugas Mendatang${filterTitle}`)
-          .setColor(0x0099ff)
+          .setTitle(`✅ Riwayat Tugas Selesai${filterTitle}`)
+          .setColor(0x00ff00)
           .setFooter({
-            text: `Halaman ${page} dari ${totalPages} | Total: ${totalItems} tugas`,
+            text: `Halaman ${page} dari ${totalPages} | Total: ${totalItems} tugas (Maksimal 50 terbaru)`,
           })
           .setTimestamp();
 
@@ -79,17 +75,6 @@ module.exports = {
           let taskDetails = `**Deskripsi:** ${task.description}\n`;
           taskDetails += `**Deadline:** ${wibTime.dateDisplay} pukul ${wibTime.time} WIB\n`;
           taskDetails += `**Kelas:** ${kelasLabel}\n`;
-          taskDetails += `**Repeat:** ${task.repeat_status}\n`;
-          if (task.link) {
-            let validLink = task.link;
-            if (
-              !validLink.startsWith("http://") &&
-              !validLink.startsWith("https://")
-            ) {
-              validLink = "https://" + validLink;
-            }
-            taskDetails += `**Link:** [Buka Tautan](${validLink})\n`;
-          }
 
           embed.addFields({
             name: `ID: ${task.id}`,
@@ -103,10 +88,10 @@ module.exports = {
 
       await paginateReply(interaction, tasks, 5, embedGenerator, true);
     } catch (error) {
-      console.error("Error fetching list:", error);
+      console.error("Error fetching history:", error);
       if (!interaction.replied && !interaction.deferred) {
         await interaction.reply({
-          content: "❌ Terjadi kesalahan saat mengambil daftar tugas.",
+          content: "❌ Terjadi kesalahan saat mengambil riwayat tugas.",
           flags: MessageFlags.Ephemeral,
         });
       }

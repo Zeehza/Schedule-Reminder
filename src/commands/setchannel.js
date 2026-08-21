@@ -34,7 +34,7 @@ module.exports = {
         if (!permissions.has(PermissionFlagsBits.SendMessages) || !permissions.has(PermissionFlagsBits.ViewChannel)) {
             return interaction.reply({ 
                 content: `❌ I do not have permission to send messages or view <#${channel.id}>.`, 
-                ephemeral: true 
+                flags: MessageFlags.Ephemeral 
             });
         }
 
@@ -49,11 +49,11 @@ module.exports = {
 
             await interaction.reply({ 
                 content: `✅ Channel notifikasi deadline untuk kelas **${kelas}** berhasil diatur ke <#${channel.id}>.`, 
-                ephemeral: true 
+                flags: MessageFlags.Ephemeral 
             });
         } catch (error) {
             console.error('Database error in setchannel:', error);
-            await interaction.reply({ content: '❌ Terjadi kesalahan saat menyimpan pengaturan channel.', ephemeral: true });
+            await interaction.reply({ content: '❌ Terjadi kesalahan saat menyimpan pengaturan channel.', flags: MessageFlags.Ephemeral });
         }
     },
 };

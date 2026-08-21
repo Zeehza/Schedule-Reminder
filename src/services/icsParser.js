@@ -4,7 +4,7 @@ const moment = require('moment-timezone');
 /**
  * Parses ICS content and extracts task information.
  * @param {string} icsContent Raw ICS string
- * @returns {Array} Array of task objects { description, deadlineUtc, link }
+ * @returns {Array} Array of task objects { uid, description, deadlineUtc, link }
  */
 function parseICS(icsContent) {
     const events = ical.sync.parseICS(icsContent);
@@ -40,6 +40,7 @@ function parseICS(icsContent) {
                 }
 
                 tasks.push({
+                    uid: event.uid || null,
                     description: finalDescription.substring(0, 2000), // Max limit
                     deadlineUtc: deadlineUtc,
                     link: link
