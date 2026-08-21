@@ -55,8 +55,8 @@ async function runMinuteTasks(client) {
     const pool = getDb();
     const nowUtc = new Date();
 
-    // Fetch all tasks
-    const [tasks] = await pool.query(`SELECT * FROM tasks`);
+    // Fetch only pending tasks to avoid processing completed tasks every minute
+    const [tasks] = await pool.query(`SELECT * FROM tasks WHERE status = 'pending'`);
 
     // Cache role mappings per guild to avoid redundant queries
     const roleCache = {};
