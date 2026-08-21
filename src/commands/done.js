@@ -1,4 +1,4 @@
-const { SlashCommandBuilder, PermissionFlagsBits } = require("discord.js");
+const { SlashCommandBuilder, PermissionFlagsBits, MessageFlags } = require("discord.js");
 const { getDb } = require("../database/connection");
 const { removePinnedTaskMessage } = require("../services/pinManager");
 
