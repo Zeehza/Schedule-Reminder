@@ -1,8 +1,18 @@
 require('dotenv').config();
 const { Client, GatewayIntentBits, Collection } = require('discord.js');
+const http = require('http');
 const fs = require('fs');
 const path = require('path');
 const { initDatabase } = require('./src/database/connection');
+
+// Simple HTTP server for Coolify health check
+const PORT = process.env.PORT || 3000;
+http.createServer((req, res) => {
+    res.writeHead(200, { 'Content-Type': 'text/plain' });
+    res.end('Schedule Reminder Bot is running!');
+}).listen(PORT, () => {
+    console.log(`Health check server listening on port ${PORT}`);
+});
 
 // Initialize Discord Client
 const client = new Client({ 
