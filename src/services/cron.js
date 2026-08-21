@@ -9,8 +9,7 @@ const { buildRoleMention } = require('../utils/role');
 function startCronJob(client) {
     let lastProcessedMinute = -1;
 
-    // Run interval every 30 seconds to catch the exact minute reliably without drifting too much
-    setInterval(async () => {
+    const runCronTick = async () => {
         const now = new Date();
         const currentMinute = now.getMinutes();
 
@@ -41,7 +40,13 @@ function startCronJob(client) {
                 console.error('Error in auto-sync job:', error);
             }
         }
-    }, 30000); // Check every 30 seconds
+    };
+
+    // Run immediately on boot
+    runCronTick();
+    
+    // Run interval every 30 seconds to catch the exact minute reliably without drifting too much
+    setInterval(runCronTick, 30000);
 
     console.log('Cron job, auto-cleanup, and auto-sync started successfully (using native setInterval).');
 }
