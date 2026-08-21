@@ -60,9 +60,9 @@ async function runMinuteTasks(client) {
         // Handle timezone parsing natively. task.deadline is a string from DB like 'YYYY-MM-DD HH:mm:ss'
         const deadlineUtc = new Date(task.deadline.replace(' ', 'T') + 'Z');
         
-        // Diff in minutes
+        // Diff in minutes (using Math.round to ignore minor second/millisecond differences)
         const diffMs = deadlineUtc.getTime() - nowUtc.getTime();
-        const diffMinutes = Math.floor(diffMs / 1000 / 60);
+        const diffMinutes = Math.round(diffMs / 1000 / 60);
 
         // Get notification channels for this guild
         const [channels] = await pool.query(`SELECT channelId, kelas FROM channels WHERE guildId = ?`, [task.guildId]);
