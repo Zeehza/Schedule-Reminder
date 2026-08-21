@@ -57,12 +57,25 @@ for (const file of eventFiles) {
     }
 }
 
-// Initialize DB and login
+// Initialize DB and login with retry
 (async () => {
-    try {
-        await initDatabase();
-        client.login(process.env.DISCORD_TOKEN);
-    } catch (error) {
-        console.error('Failed to start the bot:', error);
+    const MAX_RETRIES = 10;
+    for (let attempt = 1; attempt <= MAX_RETRIES; attempt++) {
+        try {
+            console.log(`[Attempt ${attempt}/${MAX_RETRIES}] Connecting to database...`);
+            await initDatabase();
+            console.log('Database connected! Logging in to Discord...');
+            await client.login(process.env.DISCORD_TOKEN);
+            console.log('Bot is now running!');
+            return; // Success, stop retrying
+        } catch (error) {
+            console.error(`[Attempt ${attempt}/${MAX_RETRIES}] Failed:`, error.message);
+            if (attempt < MAX_RETRIES) {
+                console.log('Retrying in 10 seconds...');
+                await new Promise(resolve => setTimeout(resolve, 10000));
+            } else {
+                console.error('All retry attempts exhausted. Bot will stay alive for health check but is NOT functional.');
+            }
+        }
     }
 })();
