@@ -15,7 +15,8 @@ module.exports = {
                     name: 'Konfigurasi & Setup (Admin)',
                     value: '`/setchannel` - Mengatur channel tempat bot mengirim notifikasi tugas.\n' +
                         '`/setrole` - Mengatur role Discord untuk masing-masing kelas (A atau B) untuk mention.\n' +
-                        '`/addschedule` - Mengimpor daftar tugas sekaligus dari file `.ics`.'
+                        '`/addschedule` - Mengimpor daftar tugas sekaligus dari file `.ics`.\n' +
+                        '`/autosync` - Mengatur auto-sync jadwal otomatis dari URL `.ics`.'
                 },
                 {
                     name: ' Manajemen Tugas (Admin)',
