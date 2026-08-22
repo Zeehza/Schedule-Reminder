@@ -1,27 +1,61 @@
 require('dotenv').config();
 const { Client, GatewayIntentBits, Collection } = require('discord.js');
-const http = require('http');
+const express = require('express');
 const fs = require('fs');
 const path = require('path');
-const { initDatabase } = require('./src/database/connection');
+const { initDatabase, getDb } = require('./src/database/connection');
 
-// HTTP server for Coolify health check + Terms & Privacy pages
+// Express server for Dashboard, API, health check + Terms & Privacy pages
 const PORT = process.env.PORT || 3000;
-http.createServer((req, res) => {
-    if (req.url === '/terms') {
-        const terms = fs.readFileSync(path.join(__dirname, 'TERMS.md'), 'utf-8');
-        res.writeHead(200, { 'Content-Type': 'text/html; charset=utf-8' });
-        res.end(renderPage('Terms of Service', terms));
-    } else if (req.url === '/privacy') {
-        const privacy = fs.readFileSync(path.join(__dirname, 'PRIVACY.md'), 'utf-8');
-        res.writeHead(200, { 'Content-Type': 'text/html; charset=utf-8' });
-        res.end(renderPage('Privacy Policy', privacy));
-    } else {
-        res.writeHead(200, { 'Content-Type': 'text/plain' });
-        res.end('Schedule Reminder Bot is running!');
+const app = express();
+
+app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.json());
+
+// API Endpoints
+app.get('/api/stats', async (req, res) => {
+    try {
+        const pool = getDb();
+        const [channels] = await pool.query('SELECT COUNT(*) as total FROM channels');
+        const [tasks] = await pool.query('SELECT COUNT(*) as total FROM tasks');
+        
+        // Count guilds bot is in directly from Discord Client
+        const totalGuilds = client.guilds.cache.size;
+
+        res.json({
+            guilds: totalGuilds,
+            channels: channels[0].total,
+            tasks: tasks[0].total
+        });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: 'Failed to fetch stats' });
     }
-}).listen(PORT, () => {
-    console.log(`Health check server listening on port ${PORT}`);
+});
+
+app.get('/api/tasks', async (req, res) => {
+    try {
+        const pool = getDb();
+        const [tasks] = await pool.query('SELECT * FROM tasks ORDER BY deadline ASC LIMIT 50');
+        res.json(tasks);
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: 'Failed to fetch tasks' });
+    }
+});
+
+app.get('/terms', (req, res) => {
+    const terms = fs.readFileSync(path.join(__dirname, 'TERMS.md'), 'utf-8');
+    res.send(renderPage('Terms of Service', terms));
+});
+
+app.get('/privacy', (req, res) => {
+    const privacy = fs.readFileSync(path.join(__dirname, 'PRIVACY.md'), 'utf-8');
+    res.send(renderPage('Privacy Policy', privacy));
+});
+
+app.listen(PORT, () => {
+    console.log(`Web server & Dashboard listening on port ${PORT}`);
 });
 
 function renderPage(title, markdown) {

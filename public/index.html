@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Schedule Reminder Bot - Dashboard</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+    <div class="background-elements">
+        <div class="blob blob-1"></div>
+        <div class="blob blob-2"></div>
+    </div>
+
+    <div class="dashboard-container">
+        <header>
+            <div class="header-content">
+                <h1>Schedule Reminder <span>Dashboard</span></h1>
+                <p>Monitor your bot's real-time statistics and upcoming tasks.</p>
+            </div>
+            <div class="header-actions">
+                <button id="refresh-btn" class="btn primary-btn">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 1 1-9-9c2.52 0 4.93 1 6.74 2.74L21 8"/><path d="M21 3v5h-5"/></svg>
+                    Refresh
+                </button>
+            </div>
+        </header>
+
+        <section class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-icon purple">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+                </div>
+                <div class="stat-info">
+                    <h3>Active Guilds</h3>
+                    <p id="stat-guilds">--</p>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon blue">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+                </div>
+                <div class="stat-info">
+                    <h3>Total Tasks</h3>
+                    <p id="stat-tasks">--</p>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon pink">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line></svg>
+                </div>
+                <div class="stat-info">
+                    <h3>Monitored Channels</h3>
+                    <p id="stat-channels">--</p>
+                </div>
+            </div>
+        </section>
+
+        <section class="tasks-section glass-panel">
+            <div class="section-header">
+                <h2>Recent & Upcoming Tasks</h2>
+                <div class="filters">
+                    <select id="kelas-filter" class="glass-select">
+                        <option value="all">All Classes</option>
+                        <option value="A">Kelas A</option>
+                        <option value="B">Kelas B</option>
+                        <option value="Semua">Semua</option>
+                    </select>
+                </div>
+            </div>
+            
+            <div class="table-container">
+                <table id="tasks-table">
+                    <thead>
+                        <tr>
+                            <th>Description</th>
+                            <th>Class</th>
+                            <th>Deadline</th>
+                            <th>Status</th>
+                            <th>Link</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tasks-body">
+                        <!-- Tasks will be injected here via JS -->
+                        <tr>
+                            <td colspan="5" class="loading-cell">
+                                <div class="spinner"></div> Loading tasks...
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+        
+        <footer>
+            <p>Schedule Reminder Bot &copy; 2026 Zeehza. <a href="/terms">Terms</a> &middot; <a href="/privacy">Privacy</a></p>
+        </footer>
+    </div>
+
+    <script src="/js/app.js"></script>
+</body>
+</html>
