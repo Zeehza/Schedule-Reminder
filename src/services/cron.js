@@ -45,8 +45,8 @@ function startCronJob(client) {
     // Run immediately on boot
     runCronTick();
     
-    // Run interval every 30 seconds to catch the exact minute reliably without drifting too much
-    setInterval(runCronTick, 30000);
+    // Run interval every 60 seconds (once per minute is sufficient)
+    setInterval(runCronTick, 60000);
 
     console.log('Cron job, auto-cleanup, and auto-sync started successfully (using native setInterval).');
 }
