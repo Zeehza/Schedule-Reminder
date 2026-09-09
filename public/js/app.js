@@ -58,7 +58,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         tbody.innerHTML = list.map(task => {
-            const deadline  = new Date(task.deadline);
+            const deadline  = parseUTC(task.deadline);
             const isPastDue = deadline < now && task.status !== 'completed';
             const sc        = task.status === 'completed' ? 'completed' : isPastDue ? 'past-due' : 'pending';
             const st        = sc === 'completed' ? 'Completed' : sc === 'past-due' ? 'Past Due' : 'Pending';
@@ -99,7 +99,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const icons = { A: '📘', B: '📗', Semua: '📋' };
 
         el.innerHTML = top.map(task => {
-            const deadline  = new Date(task.deadline);
+            const deadline  = parseUTC(task.deadline);
             const isPastDue = deadline < now && task.status !== 'completed';
             const sc        = task.status === 'completed' ? 'completed' : isPastDue ? 'past-due' : 'pending';
             const st        = sc === 'completed' ? 'Completed' : sc === 'past-due' ? 'Past Due' : 'Pending';
@@ -121,7 +121,7 @@ document.addEventListener('DOMContentLoaded', () => {
     function renderChart(tasks) {
         const now       = new Date();
         const completed = tasks.filter(t => t.status === 'completed').length;
-        const pastDue   = tasks.filter(t => t.status !== 'completed' && new Date(t.deadline) < now).length;
+        const pastDue   = tasks.filter(t => t.status !== 'completed' && parseUTC(t.deadline) < now).length;
         const pending   = tasks.length - completed - pastDue;
         const total     = tasks.length;
 
@@ -158,7 +158,7 @@ document.addEventListener('DOMContentLoaded', () => {
     /* ── Pending stat card ──────────────────── */
     function renderPendingStat(tasks) {
         const now     = new Date();
-        const pending = tasks.filter(t => t.status !== 'completed' && new Date(t.deadline) >= now).length;
+        const pending = tasks.filter(t => t.status !== 'completed' && parseUTC(t.deadline) >= now).length;
         animateValue('stat-pending', 0, pending, 900);
     }
 
@@ -181,6 +181,11 @@ document.addEventListener('DOMContentLoaded', () => {
             weekday: 'short', day: 'numeric', month: 'short',
             year: 'numeric', hour: '2-digit', minute: '2-digit'
         });
+    }
+
+    function parseUTC(s) {
+        if (!s) return new Date(NaN);
+        return new Date(s.replace(' ', 'T') + 'Z');
     }
 
     function esc(s) {
