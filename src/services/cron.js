@@ -220,14 +220,16 @@ async function runHourlySync(client) {
                 if (!exists) {
                     const taskId = generateTaskId();
                     await pool.query(
-                        `INSERT INTO tasks (id, guildId, uid, description, deadline, link, repeat_status, kelas) VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
-                        [taskId, syncJob.guildId, task.uid || null, task.description || 'Task', task.deadlineUtc, task.link, 'Once', syncJob.kelas]
+                        `INSERT INTO tasks (id, guildId, uid, description, details, course, deadline, link, repeat_status, kelas) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+                        [taskId, syncJob.guildId, task.uid || null, task.description || 'Task', task.details || null, task.course || null, task.deadlineUtc, task.link, 'Once', syncJob.kelas]
                     );
     
                     await pinTaskMessage(client, {
                         id: taskId,
                         guildId: syncJob.guildId,
                         description: task.description || 'Task',
+                        details: task.details || null,
+                        course: task.course || null,
                         deadline: task.deadlineUtc,
                         link: task.link,
                         kelas: syncJob.kelas

@@ -41,7 +41,7 @@ document.addEventListener('DOMContentLoaded', () => {
             renderPendingStat(allTasks);
         } catch {
             document.getElementById('tasks-body').innerHTML =
-                `<tr><td colspan="5" style="text-align:center;color:var(--red);padding:2rem">Failed to load tasks.</td></tr>`;
+                `<tr><td colspan="6" style="text-align:center;color:var(--red);padding:2rem">Failed to load tasks.</td></tr>`;
         }
     }
 
@@ -53,7 +53,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const now    = new Date();
 
         if (!list.length) {
-            tbody.innerHTML = `<tr><td colspan="5" style="text-align:center;color:var(--text-3);padding:2rem">No tasks found.</td></tr>`;
+            tbody.innerHTML = `<tr><td colspan="6" style="text-align:center;color:var(--text-3);padding:2rem">No tasks found.</td></tr>`;
             return;
         }
 
@@ -65,7 +65,11 @@ document.addEventListener('DOMContentLoaded', () => {
             const bc        = `badge kelas-${task.kelas.toLowerCase()}`;
 
             return `<tr>
-                <td><strong>${esc(task.description)}</strong></td>
+                <td>
+                    <strong>${esc(task.description)}</strong>
+                    ${task.details ? `<div style="font-size: 12px; color: var(--text-3); margin-top: 4px; white-space: pre-wrap;">${esc(task.details)}</div>` : ''}
+                </td>
+                <td><span style="color:var(--text-2); font-size: 13px;">${task.course ? esc(task.course) : '—'}</span></td>
                 <td><span class="${bc}">${esc(task.kelas)}</span></td>
                 <td style="color:var(--text-2)">${fmtDate(deadline)}</td>
                 <td>

@@ -63,6 +63,8 @@ async function initDatabase() {
             guildId VARCHAR(255) NOT NULL,
             uid VARCHAR(255),
             description TEXT,
+            details TEXT,
+            course VARCHAR(255),
             deadline DATETIME NOT NULL,
             link TEXT,
             repeat_status ENUM('Once', 'Weekly') DEFAULT 'Once',
@@ -88,6 +90,20 @@ async function initDatabase() {
     // Add uid column if it doesn't exist (for existing databases)
     try {
         await pool.query(`ALTER TABLE tasks ADD COLUMN uid VARCHAR(255)`);
+    } catch (err) {
+        // Column already exists, ignore
+    }
+
+    // Add details column if it doesn't exist (for existing databases)
+    try {
+        await pool.query(`ALTER TABLE tasks ADD COLUMN details TEXT`);
+    } catch (err) {
+        // Column already exists, ignore
+    }
+
+    // Add course column if it doesn't exist (for existing databases)
+    try {
+        await pool.query(`ALTER TABLE tasks ADD COLUMN course VARCHAR(255)`);
     } catch (err) {
         // Column already exists, ignore
     }

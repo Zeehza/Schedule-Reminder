@@ -97,14 +97,16 @@ module.exports = {
                 if (!exists) {
                     const taskId = generateTaskId();
                     await pool.query(
-                        `INSERT INTO tasks (id, guildId, uid, description, deadline, link, repeat_status, kelas) VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
-                        [taskId, guildId, task.uid || null, task.description || 'Task', task.deadlineUtc, task.link, 'Once', kelas]
+                        `INSERT INTO tasks (id, guildId, uid, description, details, course, deadline, link, repeat_status, kelas) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+                        [taskId, guildId, task.uid || null, task.description || 'Task', task.details || null, task.course || null, task.deadlineUtc, task.link, 'Once', kelas]
                     );
 
                     await pinTaskMessage(interaction.client, {
                         id: taskId,
                         guildId,
                         description: task.description || 'Task',
+                        details: task.details || null,
+                        course: task.course || null,
                         deadline: task.deadlineUtc,
                         link: task.link,
                         kelas

@@ -62,9 +62,17 @@ async function pinTaskMessage(client, task) {
             .addFields(
                 { name: 'ID', value: `**${task.id}**`, inline: true },
                 { name: 'Deadline', value: `**${deadlineWib} WIB**`, inline: true },
-                { name: 'Deskripsi', value: task.description || 'Tidak ada deskripsi' }
+                { name: 'Tugas', value: task.description || 'Tidak ada nama tugas' }
             )
             .setTimestamp();
+
+        if (task.course) {
+            embed.addFields({ name: 'Mata Kuliah', value: task.course });
+        }
+
+        if (task.details && task.details.trim() !== '') {
+            embed.addFields({ name: 'Detail', value: task.details.substring(0, 1024) });
+        }
 
         if (task.link) {
             embed.addFields({ name: 'Link', value: task.link });

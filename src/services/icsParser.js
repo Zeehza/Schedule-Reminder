@@ -3,7 +3,7 @@ const ical = require('node-ical');
 /**
  * Parses ICS content and extracts task information.
  * @param {string} icsContent Raw ICS string
- * @returns {Array} Array of task objects { uid, description, deadlineUtc, link }
+ * @returns {Array} Array of task objects { uid, description, details, course, deadlineUtc, link }
  */
 function parseICS(icsContent) {
     const events = ical.sync.parseICS(icsContent);
@@ -38,9 +38,16 @@ function parseICS(icsContent) {
                     link = event.url;
                 }
 
+                let course = null;
+                if (event.categories) {
+                    course = Array.isArray(event.categories) ? event.categories[0] : event.categories;
+                }
+
                 tasks.push({
                     uid: event.uid || null,
                     description: finalDescription.substring(0, 2000), // Max limit
+                    details: description.substring(0, 2000), // Original description
+                    course: course,
                     deadlineUtc: deadlineUtc,
                     link: link
                 });
