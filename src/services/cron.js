@@ -148,7 +148,12 @@ async function runMinuteTasks(client) {
                 if (embed) {
                     embed.setColor('#9400d3')
                          .setTimestamp();
-                    await channel.send({ content: mention, embeds: [embed] });
+                    const sendOptions = { embeds: [embed] };
+                    if (mention) {
+                        sendOptions.content = mention;
+                        sendOptions.allowedMentions = { parse: ['roles', 'everyone'] };
+                    }
+                    await channel.send(sendOptions);
                 }
             }
         }

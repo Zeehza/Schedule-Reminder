@@ -76,7 +76,10 @@ module.exports = {
               : task.kelas === "A"
                 ? "Kelas A"
                 : "Kelas B";
-          let taskDetails = `**Deskripsi:** ${task.description}\n`;
+          let taskDetails = "";
+          if (task.course) {
+              taskDetails += `**Mata Kuliah:** ${task.course}\n`;
+          }
           taskDetails += `**Deadline:** ${wibTime.dateDisplay} pukul ${wibTime.time} WIB\n`;
           taskDetails += `**Kelas:** ${kelasLabel}\n`;
           taskDetails += `**Repeat:** ${task.repeat_status}\n`;

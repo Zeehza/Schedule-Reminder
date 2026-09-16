@@ -1,6 +1,7 @@
 <a id="readme-top"></a>
 
 <!-- PROJECT SHIELDS -->
+
 [![Contributors][contributors-shield]][contributors-url]
 [![Forks][forks-shield]][forks-url]
 [![Stargazers][stars-shield]][stars-url]
@@ -49,6 +50,7 @@
 </details>
 
 <!-- ABOUT THE PROJECT -->
+
 ## About The Project
 
 Schedule Reminder Bot is a Discord application designed to help communities, students, and teams stay on top of their tasks. With a built-in MySQL database and cron job integration, it accurately reminds designated roles or channels about upcoming schedules.
@@ -57,22 +59,23 @@ Schedule Reminder Bot is a Discord application designed to help communities, stu
 
 ### Built With
 
-* [![Node][Node.js]][Node-url]
-* [![Discord][Discord.js]][Discord-url]
-* [![MySQL][MySQL.com]][MySQL-url]
+- [![Node][Node.js]][Node-url]
+- [![Discord][Discord.js]][Discord-url]
+- [![MySQL][MySQL.com]][MySQL-url]
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 <!-- GETTING STARTED -->
+
 ## Getting Started
 
 To get a local copy up and running follow these simple steps.
 
 ### Prerequisites
 
-* Node.js (v16.9.0 or higher recommended)
-* MySQL Server
-* npm
+- Node.js (v16.9.0 or higher recommended)
+- MySQL Server
+- npm
   ```sh
   npm install npm@latest -g
   ```
@@ -106,15 +109,17 @@ To get a local copy up and running follow these simple steps.
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 <!-- USAGE EXAMPLES -->
+
 ## Usage
 
-Once the bot is invited to your server and running, it will register its slash commands automatically. Use the slash commands to interact with the bot. 
+Once the bot is invited to your server and running, it will register its slash commands automatically. Use the slash commands to interact with the bot.
 
 For example, use `/setchannel` to define where reminders should be sent, and `/new` to create a new schedule.
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 <!-- COMMANDS -->
+
 ## Commands
 
 Here is a list of available slash commands:
@@ -134,6 +139,7 @@ Here is a list of available slash commands:
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 <!-- ROADMAP -->
+
 ## Roadmap
 
 - [x] Basic slash commands support
@@ -147,6 +153,7 @@ See the [open issues](https://github.com/Zeehza/Schedule-Reminder/issues) for a 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 <!-- CONTRIBUTING -->
+
 ## Contributing
 
 Contributions are what make the open source community such an amazing place to learn, inspire, and create. Any contributions you make are **greatly appreciated**.
@@ -163,6 +170,7 @@ Don't forget to give the project a star! Thanks again!
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 <!-- LICENSE -->
+
 ## License
 
 Distributed under the ISC License. See `package.json` for more information.
@@ -170,6 +178,7 @@ Distributed under the ISC License. See `package.json` for more information.
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 <!-- CONTACT -->
+
 ## Contact
 
 Zeehza - [GitHub Profile](https://github.com/Zeehza)
@@ -179,6 +188,7 @@ Project Link: [https://github.com/Zeehza/Schedule-Reminder](https://github.com/Z
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 <!-- MARKDOWN LINKS & IMAGES -->
+
 [contributors-shield]: https://img.shields.io/github/contributors/Zeehza/Schedule-Reminder.svg?style=for-the-badge
 [contributors-url]: https://github.com/Zeehza/Schedule-Reminder/graphs/contributors
 [forks-shield]: https://img.shields.io/github/forks/Zeehza/Schedule-Reminder.svg?style=for-the-badge

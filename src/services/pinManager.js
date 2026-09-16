@@ -62,7 +62,7 @@ async function pinTaskMessage(client, task) {
             .addFields(
                 { name: 'ID', value: `**${task.id}**`, inline: true },
                 { name: 'Deadline', value: `**${deadlineWib} WIB**`, inline: true },
-                { name: 'Tugas', value: task.description || 'Tidak ada nama tugas' }
+                { name: 'Tugas', value: (task.description || 'Tidak ada nama tugas').substring(0, 1024) }
             )
             .setTimestamp();
 
@@ -71,7 +71,7 @@ async function pinTaskMessage(client, task) {
         }
 
         if (task.details && task.details.trim() !== '') {
-            embed.addFields({ name: 'Detail', value: task.details.substring(0, 1024) });
+            embed.setDescription(task.details.substring(0, 3000));
         }
 
         if (task.link) {
@@ -82,7 +82,12 @@ async function pinTaskMessage(client, task) {
             try {
                 const channel = client.channels.cache.get(channelId) || await client.channels.fetch(channelId);
                 if (channel) {
-                    const msg = await channel.send({ content: roleMention, embeds: [embed] });
+                    const sendOptions = { embeds: [embed] };
+                    if (roleMention) {
+                        sendOptions.content = roleMention;
+                        sendOptions.allowedMentions = { parse: ['roles', 'everyone'] };
+                    }
+                    const msg = await channel.send(sendOptions);
                     await msg.pin();
 
                     // Try to delete the system "pinned a message" message to keep it clean

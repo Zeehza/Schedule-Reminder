@@ -1,5 +1,29 @@
 const ical = require('node-ical');
 
+const courseMap = {
+    'TK245009': 'Pemrograman Web II',
+    'TK245008': 'Manajemen Proyek',
+    'TK245007': 'Metode Numerik',
+    'TK245006': 'Etika Profesi',
+    'TK245004': 'Internet of Things',
+    'TK245001': 'Sistem Kendali',
+    'TK24A003': 'Supply Chain Management',
+    'TK245005': 'Praktikum Sistem Internet of Thing',
+    'TK245003': 'Praktikum Keamanan Jaringan Komputer',
+    'TK245010': 'Praktikum Pemrograman Web II',
+    'TK245002': 'Keamanan Jaringan Komputer'
+};
+
+function getMappedCourse(category) {
+    if (!category) return null;
+    for (const [code, name] of Object.entries(courseMap)) {
+        if (category.includes(code)) {
+            return name;
+        }
+    }
+    return category;
+}
+
 /**
  * Parses ICS content and extracts task information.
  * @param {string} icsContent Raw ICS string
@@ -40,13 +64,14 @@ function parseICS(icsContent) {
 
                 let course = null;
                 if (event.categories) {
-                    course = Array.isArray(event.categories) ? event.categories[0] : event.categories;
+                    let rawCategory = Array.isArray(event.categories) ? event.categories[0] : event.categories;
+                    course = getMappedCourse(rawCategory);
                 }
 
                 tasks.push({
                     uid: event.uid || null,
-                    description: finalDescription.substring(0, 2000), // Max limit
-                    details: description.substring(0, 2000), // Original description
+                    description: finalDescription.substring(0, 3000), // Max limit
+                    details: description.substring(0, 3000), // Original description
                     course: course,
                     deadlineUtc: deadlineUtc,
                     link: link
