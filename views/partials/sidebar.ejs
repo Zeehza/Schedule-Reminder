@@ -1,0 +1,54 @@
+<aside class="sidebar">
+  <div class="sidebar-logo">
+    <div class="logo-icon">SR</div>
+    <div class="logo-text">
+      Schedule Reminder
+      <small>Discord Bot</small>
+    </div>
+  </div>
+
+  <span class="sidebar-section-label">Navigation</span>
+
+  <a href="/" class="nav-item <%= typeof path !== 'undefined' && path === '/' ? 'active' : '' %>" id="nav-dashboard">
+    <svg class="nav-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+      <rect x="3" y="3" width="7" height="7" rx="1" />
+      <rect x="14" y="3" width="7" height="7" rx="1" />
+      <rect x="3" y="14" width="7" height="7" rx="1" />
+      <rect x="14" y="14" width="7" height="7" rx="1" />
+    </svg>
+    Dashboard
+  </a>
+
+  <div class="sidebar-divider"></div>
+  <span class="sidebar-section-label">Legal</span>
+
+  <a href="/terms" class="nav-item <%= typeof path !== 'undefined' && path === '/terms' ? 'active' : '' %>">
+    <svg class="nav-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+      <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+      <polyline points="14 2 14 8 20 8" />
+      <line x1="16" y1="13" x2="8" y2="13" />
+      <line x1="16" y1="17" x2="8" y2="17" />
+    </svg>
+    Terms of Service
+  </a>
+
+  <a href="/privacy" class="nav-item <%= typeof path !== 'undefined' && path === '/privacy' ? 'active' : '' %>">
+    <svg class="nav-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+      <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+    </svg>
+    Privacy Policy
+  </a>
+
+  <div class="sidebar-footer">
+    <div class="bot-status-card">
+      <div class="bot-avatar"></div>
+      <div class="bot-info">
+        <div class="bot-name">Pawang Tugas</div>
+        <div class="bot-online">
+          <div class="online-dot"></div>
+          Online
+        </div>
+      </div>
+    </div>
+  </div>
+</aside>

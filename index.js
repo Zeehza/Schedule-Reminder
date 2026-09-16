@@ -9,8 +9,15 @@ const { initDatabase, getDb } = require('./src/database/connection');
 const PORT = process.env.PORT || 3000;
 const app = express();
 
+app.set('view engine', 'ejs');
+app.set('views', path.join(__dirname, 'views'));
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(express.json());
+
+// Main Routes
+app.get('/', (req, res) => res.render('index'));
+app.get('/terms', (req, res) => res.render('terms'));
+app.get('/privacy', (req, res) => res.render('privacy'));
 
 // API Endpoints
 app.get('/api/stats', async (req, res) => {
@@ -43,9 +50,6 @@ app.get('/api/tasks', async (req, res) => {
         res.status(500).json({ error: 'Failed to fetch tasks' });
     }
 });
-
-app.get('/terms',   (req, res) => res.sendFile(path.join(__dirname, 'public', 'terms.html')));
-app.get('/privacy', (req, res) => res.sendFile(path.join(__dirname, 'public', 'privacy.html')));
 
 app.listen(PORT, () => {
     console.log(`Web server & Dashboard listening on port ${PORT}`);

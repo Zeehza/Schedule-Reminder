@@ -67,7 +67,6 @@ document.addEventListener('DOMContentLoaded', () => {
             return `<tr>
                 <td>
                     <strong>${esc(task.description)}</strong>
-                    ${task.details ? `<div style="font-size: 12px; color: var(--text-3); margin-top: 4px; white-space: pre-wrap;">${esc(task.details)}</div>` : ''}
                 </td>
                 <td><span style="color:var(--text-2); font-size: 13px;">${task.course ? esc(task.course) : '—'}</span></td>
                 <td><span class="${bc}">${esc(task.kelas)}</span></td>
