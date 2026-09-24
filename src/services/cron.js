@@ -127,22 +127,23 @@ async function runMinuteTasks(client) {
                 const channel = client.channels.cache.get(target.channelId);
                 if (!channel) continue;
 
-                const mention = buildRoleMention(target.kelasToPing, roles);
+                const { mention, roleIds } = buildRoleMention(target.kelasToPing, roles);
                 const kelasLabel = taskKelas === 'Semua' ? '' : ` (Kelas ${taskKelas})`;
+                const courseLabel = task.course ? `\n📚 Mata Kuliah: **${task.course}**` : '';
 
                 let embed = null;
                 if (diffMinutes === 72 * 60) {
                     embed = new EmbedBuilder()
                         .setTitle(`🔴 PERHATIAN! H-3 Deadline!${kelasLabel}`)
-                        .setDescription(`Tugas **${task.description}** harus dikumpulkan dalam 3 hari lagi.${linkText}`);
+                        .setDescription(`Tugas **${task.description}** harus dikumpulkan dalam 3 hari lagi.${courseLabel}${linkText}`);
                 } else if (diffMinutes === 24 * 60) {
                     embed = new EmbedBuilder()
                         .setTitle(`❗ PENGINGAT H-1!${kelasLabel}`)
-                        .setDescription(`Besok adalah batas akhir pengumpulan **${task.description}**. Segera selesaikan!${linkText}`);
+                        .setDescription(`Besok adalah batas akhir pengumpulan **${task.description}**. Segera selesaikan!${courseLabel}${linkText}`);
                 } else if (diffMinutes === 12 * 60) {
                     embed = new EmbedBuilder()
                         .setTitle(`⚠️ FINAL REMINDER!${kelasLabel}`)
-                        .setDescription(`Waktu tersisa 12 Jam lagi untuk mengumpulkan **${task.description}**!${linkText}`);
+                        .setDescription(`Waktu tersisa 12 Jam lagi untuk mengumpulkan **${task.description}**!${courseLabel}${linkText}`);
                 }
 
                 if (embed) {
@@ -151,7 +152,12 @@ async function runMinuteTasks(client) {
                     const sendOptions = { embeds: [embed] };
                     if (mention) {
                         sendOptions.content = mention;
-                        sendOptions.allowedMentions = { parse: ['roles', 'everyone'] };
+                        // Use explicit role IDs for reliable pinging
+                        if (roleIds.length > 0) {
+                            sendOptions.allowedMentions = { roles: roleIds };
+                        } else {
+                            sendOptions.allowedMentions = { parse: ['everyone'] };
+                        }
                     }
                     await channel.send(sendOptions);
                 }

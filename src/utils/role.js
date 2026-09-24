@@ -2,7 +2,7 @@
  * Build a role mention string based on task kelas and guild roles config
  * @param {string} taskKelas The class of the task ('A', 'B', 'Semua')
  * @param {Array} roles Database roles array for the guild
- * @returns {string} The role mention string
+ * @returns {{ mention: string, roleIds: string[] }} The role mention string and raw role IDs
  */
 function buildRoleMention(taskKelas, roles) {
     const roleMap = {};
@@ -11,19 +11,23 @@ function buildRoleMention(taskKelas, roles) {
     }
 
     if (taskKelas === 'A' && roleMap['A']) {
-        return `<@&${roleMap['A']}>`;
+        return { mention: `<@&${roleMap['A']}>`, roleIds: [roleMap['A']] };
     }
     if (taskKelas === 'B' && roleMap['B']) {
-        return `<@&${roleMap['B']}>`;
+        return { mention: `<@&${roleMap['B']}>`, roleIds: [roleMap['B']] };
     }
     if (taskKelas === 'Semua') {
         const mentions = [];
-        if (roleMap['A']) mentions.push(`<@&${roleMap['A']}>`);
-        if (roleMap['B']) mentions.push(`<@&${roleMap['B']}>`);
-        return mentions.length > 0 ? mentions.join(' ') : '@everyone';
+        const ids = [];
+        if (roleMap['A']) { mentions.push(`<@&${roleMap['A']}>`); ids.push(roleMap['A']); }
+        if (roleMap['B']) { mentions.push(`<@&${roleMap['B']}>`); ids.push(roleMap['B']); }
+        if (mentions.length > 0) {
+            return { mention: mentions.join(' '), roleIds: ids };
+        }
+        return { mention: '@everyone', roleIds: [] };
     }
 
-    return ''; // Fallback
+    return { mention: '', roleIds: [] }; // Fallback
 }
 
 module.exports = { buildRoleMention };

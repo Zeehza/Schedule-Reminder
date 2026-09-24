@@ -117,7 +117,7 @@ module.exports = {
 
             // Build role mention for reply
             const [roles] = await pool.query(`SELECT * FROM roles WHERE guildId = ?`, [guildId]);
-            const roleMention = buildRoleMention(kelas, roles);
+            const { mention: roleMention } = buildRoleMention(kelas, roles);
 
             const kelasLabel = kelas === 'Semua' ? 'Semua Kelas' : `Kelas ${kelas}`;
             await interaction.editReply({

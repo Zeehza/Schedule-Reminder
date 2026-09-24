@@ -2,6 +2,7 @@ const { SlashCommandBuilder, PermissionFlagsBits, ModalBuilder, TextInputBuilder
 const { getDb } = require('../database/connection');
 const { parseWibToUtcString, generateTaskId } = require('../utils/time');
 const { pinTaskMessage } = require('../services/pinManager');
+const { buildRoleMention } = require('../utils/role');
 
 module.exports = {
     data: new SlashCommandBuilder()
@@ -122,21 +123,8 @@ module.exports = {
             });
 
             // Build role mention
-            let roleMention = '';
             const [roles] = await pool.query(`SELECT * FROM roles WHERE guildId = ?`, [guildId]);
-            const roleMap = {};
-            for (const r of roles) roleMap[r.kelas] = r.roleId;
-
-            if (kelas === 'A' && roleMap['A']) {
-                roleMention = `<@&${roleMap['A']}>`;
-            } else if (kelas === 'B' && roleMap['B']) {
-                roleMention = `<@&${roleMap['B']}>`;
-            } else if (kelas === 'Semua') {
-                const mentions = [];
-                if (roleMap['A']) mentions.push(`<@&${roleMap['A']}>`);
-                if (roleMap['B']) mentions.push(`<@&${roleMap['B']}>`);
-                roleMention = mentions.length > 0 ? mentions.join(' ') : '@everyone';
-            }
+            const { mention: roleMention } = buildRoleMention(kelas, roles);
 
             const kelasLabel = kelas === 'Semua' ? 'Semua Kelas' : `Kelas ${kelas}`;
             await interaction.reply({

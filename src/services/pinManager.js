@@ -1,6 +1,7 @@
 const { getDb } = require('../database/connection');
 const { EmbedBuilder } = require('discord.js');
 const moment = require('moment-timezone');
+const { buildRoleMention } = require('../utils/role');
 
 /**
  * Send and pin a task message in the respective channel
@@ -36,22 +37,9 @@ async function pinTaskMessage(client, task) {
 
         if (targetChannelIds.length === 0) return;
 
-        // Get roles for mentions
+        // Get roles for mentions using shared utility
         const [roles] = await pool.query(`SELECT * FROM roles WHERE guildId = ?`, [task.guildId]);
-        const roleMap = {};
-        for (const r of roles) roleMap[r.kelas] = r.roleId;
-
-        let roleMention = '';
-        if (task.kelas === 'A' && roleMap['A']) {
-            roleMention = `<@&${roleMap['A']}>`;
-        } else if (task.kelas === 'B' && roleMap['B']) {
-            roleMention = `<@&${roleMap['B']}>`;
-        } else if (task.kelas === 'Semua') {
-            const mentions = [];
-            if (roleMap['A']) mentions.push(`<@&${roleMap['A']}>`);
-            if (roleMap['B']) mentions.push(`<@&${roleMap['B']}>`);
-            roleMention = mentions.length > 0 ? mentions.join(' ') : '@everyone';
-        }
+        const { mention: roleMention, roleIds } = buildRoleMention(task.kelas || 'Semua', roles);
 
         const deadlineWib = moment.utc(task.deadline).tz('Asia/Jakarta').format('DD/MM/YYYY HH:mm');
         const kelasLabel = task.kelas === 'Semua' ? 'Semua Kelas' : `Kelas ${task.kelas}`;
@@ -85,7 +73,12 @@ async function pinTaskMessage(client, task) {
                     const sendOptions = { embeds: [embed] };
                     if (roleMention) {
                         sendOptions.content = roleMention;
-                        sendOptions.allowedMentions = { parse: ['roles', 'everyone'] };
+                        // Use explicit role IDs for reliable pinging
+                        if (roleIds.length > 0) {
+                            sendOptions.allowedMentions = { roles: roleIds };
+                        } else {
+                            sendOptions.allowedMentions = { parse: ['everyone'] };
+                        }
                     }
                     const msg = await channel.send(sendOptions);
                     await msg.pin();
