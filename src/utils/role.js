@@ -10,11 +10,19 @@ function buildRoleMention(taskKelas, roles) {
         roleMap[r.kelas] = r.roleId;
     }
 
-    if (taskKelas === 'A' && roleMap['A']) {
-        return { mention: `<@&${roleMap['A']}>`, roleIds: [roleMap['A']] };
+    if (taskKelas === 'A') {
+        if (roleMap['A']) {
+            return { mention: `<@&${roleMap['A']}>`, roleIds: [roleMap['A']] };
+        }
+        // Role kelas A belum di-set, fallback ke @everyone
+        return { mention: '@everyone', roleIds: [] };
     }
-    if (taskKelas === 'B' && roleMap['B']) {
-        return { mention: `<@&${roleMap['B']}>`, roleIds: [roleMap['B']] };
+    if (taskKelas === 'B') {
+        if (roleMap['B']) {
+            return { mention: `<@&${roleMap['B']}>`, roleIds: [roleMap['B']] };
+        }
+        // Role kelas B belum di-set, fallback ke @everyone
+        return { mention: '@everyone', roleIds: [] };
     }
     if (taskKelas === 'Semua') {
         const mentions = [];
@@ -27,7 +35,7 @@ function buildRoleMention(taskKelas, roles) {
         return { mention: '@everyone', roleIds: [] };
     }
 
-    return { mention: '', roleIds: [] }; // Fallback
+    return { mention: '@everyone', roleIds: [] }; // Fallback ke @everyone
 }
 
 module.exports = { buildRoleMention };
