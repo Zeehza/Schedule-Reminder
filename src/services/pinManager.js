@@ -1,6 +1,6 @@
 const { getDb } = require('../database/connection');
 const { EmbedBuilder } = require('discord.js');
-const moment = require('moment-timezone');
+const { formatUtcToWib } = require('../utils/time');
 const { buildRoleMention } = require('../utils/role');
 
 /**
@@ -41,15 +41,15 @@ async function pinTaskMessage(client, task) {
         const [roles] = await pool.query(`SELECT * FROM roles WHERE guildId = ?`, [task.guildId]);
         const { mention: roleMention, roleIds } = buildRoleMention(task.kelas || 'Semua', roles);
 
-        const deadlineWib = moment.utc(task.deadline).tz('Asia/Jakarta').format('DD/MM/YYYY HH:mm');
+        const wibTime = formatUtcToWib(task.deadline);
         const kelasLabel = task.kelas === 'Semua' ? 'Semua Kelas' : `Kelas ${task.kelas}`;
-        let linkText = task.link ? `\n🔗 Link: ${task.link}` : '';
+        let linkText = task.link ? `\nLink: ${task.link}` : '';
         const embed = new EmbedBuilder()
-            .setTitle(`📢 Tugas Baru untuk ${kelasLabel}!`)
+            .setTitle(`Tugas Baru untuk ${kelasLabel}!`)
             .setColor('#9400d3')
             .addFields(
                 { name: 'ID', value: `**${task.id}**`, inline: true },
-                { name: 'Deadline', value: `**${deadlineWib} WIB**`, inline: true },
+                { name: 'Deadline', value: `**${wibTime.dateDisplay} pukul ${wibTime.time} WIB**`, inline: true },
                 { name: 'Tugas', value: (task.description || 'Tidak ada nama tugas').substring(0, 1024) }
             )
             .setTimestamp();

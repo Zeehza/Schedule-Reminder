@@ -1,6 +1,6 @@
 const { SlashCommandBuilder, PermissionFlagsBits, ModalBuilder, TextInputBuilder, TextInputStyle, ActionRowBuilder, StringSelectMenuBuilder, MessageFlags } = require('discord.js');
 const { getDb } = require('../database/connection');
-const { parseWibToUtcString, generateTaskId } = require('../utils/time');
+const { parseWibToUtcString, generateTaskId, formatUtcToWib } = require('../utils/time');
 const { pinTaskMessage } = require('../services/pinManager');
 const { buildRoleMention } = require('../utils/role');
 
@@ -127,8 +127,9 @@ module.exports = {
             const { mention: roleMention } = buildRoleMention(kelas, roles);
 
             const kelasLabel = kelas === 'Semua' ? 'Semua Kelas' : `Kelas ${kelas}`;
+            const wibTime = formatUtcToWib(deadlineUtc);
             await interaction.reply({
-                content: `${roleMention} ✅ Deadline **${taskId}** untuk **${kelasLabel}** berhasil ditambahkan.\n📝 **${description}**`
+                content: `${roleMention} ✅ Deadline **${taskId}** untuk **${kelasLabel}** berhasil ditambahkan.\n**${description}**\n**${wibTime.dateDisplay} pukul ${wibTime.time} WIB**`
             });
         } catch (error) {
             console.error('Error handling new task modal:', error);

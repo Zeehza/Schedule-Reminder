@@ -27,12 +27,12 @@ async function paginateReply(interaction, items, itemsPerPage, embedGenerator, e
             .addComponents(
                 new ButtonBuilder()
                     .setCustomId('prev_page')
-                    .setLabel('⬅️ Sebelumnya')
+                    .setLabel('Sebelumnya')
                     .setStyle(ButtonStyle.Primary)
                     .setDisabled(page === 1),
                 new ButtonBuilder()
                     .setCustomId('next_page')
-                    .setLabel('Selanjutnya ➡️')
+                    .setLabel('Selanjutnya')
                     .setStyle(ButtonStyle.Primary)
                     .setDisabled(page === totalPages)
             );
@@ -79,12 +79,12 @@ async function paginateReply(interaction, items, itemsPerPage, embedGenerator, e
             .addComponents(
                 new ButtonBuilder()
                     .setCustomId('prev_page')
-                    .setLabel('⬅️ Sebelumnya')
+                    .setLabel('Sebelumnya')
                     .setStyle(ButtonStyle.Primary)
                     .setDisabled(true),
                 new ButtonBuilder()
                     .setCustomId('next_page')
-                    .setLabel('Selanjutnya ➡️')
+                    .setLabel('Selanjutnya')
                     .setStyle(ButtonStyle.Primary)
                     .setDisabled(true)
             );

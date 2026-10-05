@@ -34,13 +34,13 @@ module.exports = {
                 .addOptions([
                     { label: 'Kelas A', value: 'A', default: currentKelas === 'A' },
                     { label: 'Kelas B', value: 'B', default: currentKelas === 'B' },
-                    { label: 'Semua Kelas', value: 'Semua', emoji: '📢', default: currentKelas === 'Semua' },
+                    { label: 'Semua Kelas', value: 'Semua', default: currentKelas === 'Semua' },
                 ]);
 
             const row = new ActionRowBuilder().addComponents(selectMenu);
 
             await interaction.reply({
-                content: `📋 **Pilih kelas tujuan untuk tugas ${taskId}:**\n_(Kelas saat ini: **${currentKelas === 'Semua' ? 'Semua Kelas' : 'Kelas ' + currentKelas}**)_`,
+                content: `**Pilih kelas tujuan untuk tugas ${taskId}:**\n_(Kelas saat ini: **${currentKelas === 'Semua' ? 'Semua Kelas' : 'Kelas ' + currentKelas}**)_`,
                 components: [row],
                 flags: MessageFlags.Ephemeral
             });
@@ -149,7 +149,8 @@ module.exports = {
             );
 
             const kelasLabel = kelas === 'Semua' ? 'Semua Kelas' : `Kelas ${kelas}`;
-            await interaction.reply({ content: `✅ Tugas ${taskId} berhasil diubah. (Kelas: **${kelasLabel}**)` });
+            const wibTime = formatUtcToWib(deadlineUtc);
+            await interaction.reply({ content: `✅ Tugas ${taskId} berhasil diubah. (Kelas: **${kelasLabel}**)\n**${wibTime.dateDisplay} pukul ${wibTime.time} WIB**` });
         } catch (error) {
             console.error('Error handling edit task modal:', error);
             await interaction.reply({ content: '❌ Terjadi kesalahan saat menyimpan perubahan.', flags: MessageFlags.Ephemeral });

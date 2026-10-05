@@ -57,7 +57,7 @@ module.exports = {
 
       const embedGenerator = (currentTasks, page, totalPages, totalItems) => {
         const embed = new EmbedBuilder()
-          .setTitle(`✅ Riwayat Tugas Selesai${filterTitle}`)
+          .setTitle(`Riwayat Tugas Selesai${filterTitle}`)
           .setColor(0x00ff00)
           .setFooter({
             text: `Halaman ${page} dari ${totalPages} | Total: ${totalItems} tugas (Maksimal 50 terbaru)`,
@@ -68,7 +68,7 @@ module.exports = {
           const wibTime = formatUtcToWib(task.deadline);
           const kelasLabel =
             task.kelas === "Semua"
-              ? "📢 Semua"
+              ? "Semua"
               : task.kelas === "A"
                 ? "Kelas A"
                 : "Kelas B";

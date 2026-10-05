@@ -50,7 +50,7 @@ module.exports = {
           ? ` untuk ${kelasFilter === "Semua" ? "Semua Kelas" : "Kelas " + kelasFilter}`
           : "";
         return interaction.reply({
-          content: `😃 Tidak ada tugas mendatang silahkan tidur${filterText}.`,
+          content: `Tidak ada tugas mendatang silahkan tidur${filterText}.`,
           flags: MessageFlags.Ephemeral,
         });
       }
@@ -61,7 +61,7 @@ module.exports = {
 
       const embedGenerator = (currentTasks, page, totalPages, totalItems) => {
         const embed = new EmbedBuilder()
-          .setTitle(`📋 Daftar Tugas Mendatang${filterTitle}`)
+          .setTitle(`Daftar Tugas Mendatang${filterTitle}`)
           .setColor(0x0099ff)
           .setFooter({
             text: `Halaman ${page} dari ${totalPages} | Total: ${totalItems} tugas`,
@@ -72,7 +72,7 @@ module.exports = {
           const wibTime = formatUtcToWib(task.deadline);
           const kelasLabel =
             task.kelas === "Semua"
-              ? "📢 Semua"
+              ? "Semua"
               : task.kelas === "A"
                 ? "Kelas A"
                 : "Kelas B";

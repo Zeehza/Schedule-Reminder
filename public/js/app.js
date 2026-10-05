@@ -99,7 +99,7 @@ document.addEventListener('DOMContentLoaded', () => {
             return;
         }
 
-        const icons = { A: '📘', B: '📗', Semua: '📋' };
+        const icons = { A: 'A', B: 'B', Semua: 'S' };
 
         el.innerHTML = top.map(task => {
             const deadline  = parseUTC(task.deadline);
@@ -107,7 +107,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const sc        = task.status === 'completed' ? 'completed' : isPastDue ? 'past-due' : 'pending';
             const st        = sc === 'completed' ? 'Completed' : sc === 'past-due' ? 'Past Due' : 'Pending';
             const iconClass = `task-item-icon ${task.kelas.toLowerCase()}`;
-            const icon      = icons[task.kelas] || '📌';
+            const icon      = icons[task.kelas] || '?';
 
             return `<div class="task-list-item">
                 <div class="${iconClass}">${icon}</div>

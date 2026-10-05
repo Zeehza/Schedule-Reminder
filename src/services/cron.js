@@ -1,9 +1,8 @@
 const { GuildScheduledEventPrivacyLevel, GuildScheduledEventEntityType, EmbedBuilder } = require('discord.js');
 const { getDb } = require('../database/connection');
-const { TIMEZONE } = require('../utils/time');
+const { TIMEZONE, formatUtcToWib, generateTaskId } = require('../utils/time');
 const { removePinnedTaskMessage, pinTaskMessage } = require('./pinManager');
 const { parseICS } = require('./icsParser');
-const { generateTaskId } = require('../utils/time');
 const { buildRoleMention } = require('../utils/role');
 
 function startCronJob(client) {
@@ -118,7 +117,7 @@ async function runMinuteTasks(client) {
             if (!validLink.startsWith('http://') && !validLink.startsWith('https://')) {
                 validLink = 'https://' + validLink;
             }
-            linkText = `\n🔗 Link: ${validLink}`;
+            linkText = `\nLink: ${validLink}`;
         }
 
         // Phase 4: Notifications
@@ -129,21 +128,23 @@ async function runMinuteTasks(client) {
 
                 const { mention, roleIds } = buildRoleMention(target.kelasToPing, roles);
                 const kelasLabel = taskKelas === 'Semua' ? '' : ` (Kelas ${taskKelas})`;
-                const courseLabel = task.course ? `\n📚 Mata Kuliah: **${task.course}**` : '';
+                const courseLabel = task.course ? `\nMata Kuliah: **${task.course}**` : '';
+                const wibTime = formatUtcToWib(task.deadline);
+                const deadlineLabel = `\nDeadline: **${wibTime.dateDisplay} pukul ${wibTime.time} WIB**`;
 
                 let embed = null;
                 if (diffMinutes === 72 * 60) {
                     embed = new EmbedBuilder()
-                        .setTitle(`🔴 PERHATIAN! H-3 Deadline!${kelasLabel}`)
-                        .setDescription(`Tugas **${task.description}** harus dikumpulkan dalam 3 hari lagi.${courseLabel}${linkText}`);
+                        .setTitle(`PERHATIAN! H-3 Deadline!${kelasLabel}`)
+                        .setDescription(`Tugas **${task.description}** harus dikumpulkan dalam 3 hari lagi.${courseLabel}${deadlineLabel}${linkText}`);
                 } else if (diffMinutes === 24 * 60) {
                     embed = new EmbedBuilder()
-                        .setTitle(`❗ PENGINGAT H-1!${kelasLabel}`)
-                        .setDescription(`Besok adalah batas akhir pengumpulan **${task.description}**. Segera selesaikan!${courseLabel}${linkText}`);
+                        .setTitle(`PENGINGAT H-1!${kelasLabel}`)
+                        .setDescription(`Besok adalah batas akhir pengumpulan **${task.description}**. Segera selesaikan!${courseLabel}${deadlineLabel}${linkText}`);
                 } else if (diffMinutes === 12 * 60) {
                     embed = new EmbedBuilder()
-                        .setTitle(`⚠️ FINAL REMINDER!${kelasLabel}`)
-                        .setDescription(`Waktu tersisa 12 Jam lagi untuk mengumpulkan **${task.description}**!${courseLabel}${linkText}`);
+                        .setTitle(`FINAL REMINDER!${kelasLabel}`)
+                        .setDescription(`Waktu tersisa 12 Jam lagi untuk mengumpulkan **${task.description}**!${courseLabel}${deadlineLabel}${linkText}`);
                 }
 
                 if (embed) {
