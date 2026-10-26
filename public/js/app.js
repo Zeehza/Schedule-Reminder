@@ -20,6 +20,7 @@ document.addEventListener('DOMContentLoaded', () => {
     async function fetchStats() {
         try {
             const res = await fetch('/api/stats');
+            if (!res.ok) throw new Error('API returned status ' + res.status);
             const data = await res.json();
             animateValue('stat-guilds',   0, data.guilds   || 0, 900);
             animateValue('stat-tasks',    0, data.tasks    || 0, 900);
@@ -34,7 +35,9 @@ document.addEventListener('DOMContentLoaded', () => {
     async function fetchTasks() {
         try {
             const res  = await fetch('/api/tasks');
+            if (!res.ok) throw new Error('API returned status ' + res.status);
             allTasks   = await res.json();
+            if (!Array.isArray(allTasks)) throw new Error('Expected array of tasks');
             renderTable(allTasks);
             renderRecentList(allTasks);
             renderChart(allTasks);
@@ -42,6 +45,8 @@ document.addEventListener('DOMContentLoaded', () => {
         } catch {
             document.getElementById('tasks-body').innerHTML =
                 `<tr><td colspan="6" style="text-align:center;color:var(--red);padding:2rem">Failed to load tasks.</td></tr>`;
+            document.getElementById('recent-tasks-list').innerHTML =
+                `<p style="color:var(--red);font-size:13px;text-align:center;padding:16px">Failed to load recent tasks.</p>`;
         }
     }
 

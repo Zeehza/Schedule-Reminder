@@ -4,24 +4,32 @@ require('dotenv').config();
 let pool;
 
 async function initDatabase() {
-    // First, connect without a specific database to ensure it exists
-    const tempConnection = await mysql.createConnection({
-        host: process.env.DB_HOST || 'localhost',
-        port: parseInt(process.env.DB_PORT) || 3306,
-        user: process.env.DB_USER || 'root',
-        password: process.env.DB_PASSWORD || ''
-    });
-
     const dbName = process.env.DB_NAME || 'schedule_reminder_db';
-    await tempConnection.query(`CREATE DATABASE IF NOT EXISTS \`${dbName}\``);
-    await tempConnection.end();
+    const host = process.env.DB_HOST || '127.0.0.1';
+    const port = parseInt(process.env.DB_PORT) || 3306;
+    const user = process.env.DB_USER || 'root';
+    const password = process.env.DB_PASSWORD || '';
+
+    // First, try to ensure database exists if user has permission (e.g. root)
+    try {
+        const tempConnection = await mysql.createConnection({
+            host,
+            port,
+            user,
+            password
+        });
+        await tempConnection.query(`CREATE DATABASE IF NOT EXISTS \`${dbName}\``);
+        await tempConnection.end();
+    } catch (err) {
+        // Ignored if user lacks permission to CREATE DATABASE (common for standard aaPanel database users)
+    }
 
     // Now create the connection pool
     pool = mysql.createPool({
-        host: process.env.DB_HOST || 'localhost',
-        port: parseInt(process.env.DB_PORT) || 3306,
-        user: process.env.DB_USER || 'root',
-        password: process.env.DB_PASSWORD || '',
+        host,
+        port,
+        user,
+        password,
         database: dbName,
         timezone: '+00:00',
         dateStrings: true,
